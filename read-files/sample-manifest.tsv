@@ -1,0 +1,5 @@
+sample-id	forward-absolute-filepath	reverse-absolute-filepath
+HC-DS	/home/rtsantos3/Documents/Kiara-Qiime2/read-files/HC-DS_1.fastq	/home/rtsantos3/Documents/Kiara-Qiime2/read-files/HC-DS_2.fastq
+HC-HD	/home/rtsantos3/Documents/Kiara-Qiime2/read-files/HC-HD_1.fastq	/home/rtsantos3/Documents/Kiara-Qiime2/read-files/HC-HD_2.fastq
+HC-HX	/home/rtsantos3/Documents/Kiara-Qiime2/read-files/HC-HX_1.fastq	/home/rtsantos3/Documents/Kiara-Qiime2/read-files/HC-HX_2.fastq
+HC-XY	/home/rtsantos3/Documents/Kiara-Qiime2/read-files/HC-XY_1.fastq	/home/rtsantos3/Documents/Kiara-Qiime2/read-files/HC-XY_2.fastq
