@@ -1,0 +1,100 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library(qiime2R)
+library(tidyr)
+library(microbiome)
+library(compositions)
+library(Dict)
+library(reshape2)
+library(heatmaply)
+library(KEGGREST)
+```
+
+```{r}
+
+#This code block is to stage all the files needed for visualization
+
+
+#Stage taxonomy file using Qiime2R
+taxa_vsearch <- parse_taxonomy(taxonomy = read_qza('../taxonomy_vsearch/classification.qza')$data)
+taxa_blast <- parse_taxonomy(taxonomy = read_qza('../taxonomy_blast/classification-blast.qza')$data)
+
+#Stage metadata file
+sample_metadata <- read.csv('../read-files/metadata.tsv', sep='\t')
+
+#Stage unstratified/strat kegg pathway files
+unstrat_kegg <- read.csv('../picrust2-strat/out/KEGG_pathways_out/path_abun_unstrat.tsv', sep = '\t')
+strat_kegg <- read.csv('../picrust2-strat/out/KEGG_pathways_out/path_abun_strat.tsv', sep = '\t')
+
+#Stage unstrat/strat KEGG ortholog files 
+ko_unstrat <- read.csv('../picrust2-strat/out/KO_metagenome_out/unstrat_ko_metagenome.tsv', sep = '\t')
+ko_strat <- read.csv('../picrust2-strat/out/KO_metagenome_out/strat_ko_metagenome.tsv', sep = '\t')
+
+#Open selected KOs (for plotting relevant Kegg pathways)
+deg_kos <- read.csv('./select_kos.txt', sep = '\t', header = TRUE)
+rownames(deg_kos) <- deg_kos[,1]
+deg_kos[,1] <- NULL
+
+#open the pathway to ko file
+pth_2_ko <- read.csv('~/bioinfo_pipelines/picrust2-2.4.2/picrust2/default_files/pathway_mapfiles/KEGG_pathways_to_KO.tsv', header =FALSE, sep='\t')
+#Filter to only Select KOs
+
+pth_2_ko <- pth_2_ko[pth_2_ko$V1 %in% rownames(deg_kos),]
+
+
+
+#retrieve BRITE hierarchy from KEGG using KEGGREST
+
+keggInfo('brite')
+
+```
+
+
+```{r}
+
+#This code block is to load the required files to plot NSTI vs relative abundance
+abs_count_otu <-  read_qza(file = '../dada2/table.qza')$data
+rel_count_otu <- as.data.frame(apply(abs_count_otu,2,function(x){x/sum(x)}))
+nsti_asvs <- as.data.frame(read.csv('../picrust2-strat/out/marker_predicted_and_nsti.tsv.gz', sep='\t', row.names = 1))
+
+sample_ids <- c(as.character(sample_metadata$Sample.id))
+
+rel_nsti <- merge(nsti_asvs,rel_count_otu,by="row.names",all.x=TRUE)
+
+
+rel_nsti <- melt(rel_nsti, measure.vars = sample_ids, variable.name = 'sample.id', value.name = 'rel.abundance')
+
+
+#Group accding to consortia
+
+nsti_rel_plot <- plot(rel_nsti$metadata_NSTI, rel_nsti$rel.abundance,
+      pch = 19,
+     col = factor(rel_nsti$sample.id))
+
+
+
+ggplot_rel_plot <- ggplot(data=rel_nsti,mapping= aes(x=metadata_NSTI, y=rel.abundance, color=sample.id)) + geom_point()
+
+plot(ggplot_rel_plot)
+```
+
+
+
+```{r}
+#Generate Heatplot from unstratified KEGG plots
+
+unstrat_kegg_heat <- ggplot(data = unstrat_kegg, 
+                            mapping = aes())
+
+
+
+
+```

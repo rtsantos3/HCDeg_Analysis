@@ -1,0 +1,15 @@
+KO	description
+ko00361	Chlorocyclohexane and chlorobenzene degradation
+ko00362	Benzoate degradation
+ko00625	Chloroalkane and chloroalkene degradation
+ko00621	Dioxin degradation
+ko00627	Aminobenzoate degradation
+ko00633	Nitrotoluene degradation
+ko00643	Styrene degradation
+ko00622	Xylene degradation
+ko00624	Polycyclic aromatic hydrocarbon degradation
+ko00791	Atrazine Degradation
+ko00930	Caprolactam degradation
+ko00642	Ethylbenzene degradation
+ko00626	Naphthalene degradation
+ko00623	Toluene degradation
