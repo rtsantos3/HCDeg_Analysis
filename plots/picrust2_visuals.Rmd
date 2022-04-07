@@ -5,11 +5,10 @@ library(tidyr)
 library(microbiome)
 library(compositions)
 library(reshape2)
-library(heatmaply)
-library(KEGGREST)
+library(gplots)
 library(RColorBrewer)
-
-deps
+library(ggplot2)
+library(janitor)
 ```
 
 ```{r}
@@ -65,8 +64,8 @@ nsti_asvs <- as.data.frame(read.csv('../picrust2-strat/out/marker_predicted_and_
 
 rel_nsti <- merge(nsti_asvs,rel_count_otu,by="row.names",all.x=TRUE)
 
-
-rel_nsti <- melt(rel_nsti, measure.vars = sample_ids, variable.name = 'sample.id', value.name = 'rel.abundance')
+samps <- c('HC-DS','HC-XY','HC-HX','HC-HD')
+rel_nsti <- melt(rel_nsti, measure.vars = samps, variable.name = 'sample.id', value.name = 'rel.abundance')
 
 
 #Group accding to consortia
@@ -76,6 +75,8 @@ rel_nsti <- melt(rel_nsti, measure.vars = sample_ids, variable.name = 'sample.id
 ggplot_rel_plot <- ggplot(data=rel_nsti,mapping= aes(x=metadata_NSTI, y=rel.abundance, color=sample.id)) + geom_point()
 
 plot(ggplot_rel_plot)
+
+#No need to present this. This is just a diagnostic plot
 ```
 
 ```{r}
@@ -87,10 +88,9 @@ unstrat_kegg_no_desc <- unstrat_kegg[,2:ncol(unstrat_kegg)]
 
 
 unstr_keg_mat <- data.matrix(unstrat_kegg_no_desc,rownames.force = TRUE)
-rel_abun_unstrkeg <- as.matrix(apply(unstr_keg_mat,2,function(x){x/sum(x)}))
+#get relative abundance using adorn_percentages  (From Janitor package)
+rel_abun_unstrkeg <- adorn_percentages(unstrat_kegg_no_desc, denominator = "col")
 
-
-heatmap(rel_abun_unstrkeg, Rowv = FALSE, Colv = FALSE)
 
 
 ```
@@ -108,17 +108,21 @@ gen_mat <- function(df, ids){
 
 #Filter unstrat based on deg_kos table
 
-unstr_keg_filtered <- subset(unstrat_kegg_no_desc, rownames(unstrat_kegg) %in% row.names(deg_kos)) 
-
-unstr_keg_filtered_mat <- as.matrix(unstr_keg_filtered[,2:ncol(unstr_keg_filtered)])
+unstr_keg_filtered <- subset(unstrat_kegg_no_desc, unstrat_kegg$pathway %in% row.names(deg_kos)) 
 
 
 #Plot heatmap based only on degradation
+pdf(file = "./out/KEGG-pathway-heatmap.pdf",   
+    width = 8, 
+    height = 11) 
 
-heatmap.2(unstr_keg_filtered_mat, labRow = unstr_keg_filtered$description, key=TRUE, 
-          density.info = "none", dendrogram ="none", trace='none',
+heatmap.2(gen_mat(unstr_keg_filtered,sample_ids), 
+          labRow = unstr_keg_filtered$description, 
+          key=TRUE, keysize=1, symkey=T, lhei = c(1,7), 
+          density.info = "none", dendrogram ="none", trace='none', scale='row',
           margins=c(10,24))
 
+dev.off()
 ```
 
 ```{r}
@@ -146,6 +150,7 @@ rownames(deg_df) <- NULL
 
 
 ```
+
 ```{r}
 
 #Define my color palettes
@@ -165,7 +170,6 @@ pdf(file = "./out/Per-gene-heatmap.pdf",
 heatmap.2((gen_mat(deg_df, sample_ids)), 
           labRow = deg_df$description, labCol = sample_metadata$treatment, 
            key=TRUE, keysize=1, symkey=T, lhei = c(1,7), 
-          
           Rowv = FALSE, Colv = FALSE,
           density.info = "none", dendrogram ="none", trace='none', scale='row',
           margins=c(10,30),
@@ -188,7 +192,17 @@ dev.off()
 ```
 
 ```{r}
-#Let's try making the heatmap using the ComplexHeatmaps library
 
-Heatmap(matrix=sqrt(gen_mat(deg_df,sample_ids)), show_row_dend = FALSE, show_column_dend = FALSE, label_ro)
+#Generate Cumulative relative abundances per consortia for specific degradation pathways
+
+
+#Filter then convert to long form so it's easier to plot
+filt_rel_abun <- subset(rel_abun_unstrkeg, rownames(rel_abun_unstrkeg) %in% rownames(deg_kos)) %>% melt(measure.vars = sample_ids, variable.name = 'sample.id', value.name ='rel.abundance') %>% mutate(across(description, factor))
+
+colors <- brewer.pal(11, "Paired")
+
+ggplot(filt_rel_abun, aes(x=sample.id, y=rel.abundance, fill=description)) +   geom_bar(position="stack", stat="identity") +
+scale_fill_manual(values=colors)
+
+
 ```
