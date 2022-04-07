@@ -1,22 +1,15 @@
----
-title: "R Notebook"
-output: html_notebook
----
-
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
 
 ```{r}
 library(qiime2R)
 library(tidyr)
 library(microbiome)
 library(compositions)
-library(Dict)
 library(reshape2)
 library(heatmaply)
 library(KEGGREST)
 library(RColorBrewer)
+
+deps
 ```
 
 ```{r}
@@ -45,17 +38,19 @@ rownames(deg_kos) <- deg_kos[,1]
 deg_kos[,1] <- NULL
 
 #open the pathway to ko file
-pth_2_ko <- read.csv('~/bioinfo_pipelines/picrust2-2.4.2/picrust2/default_files/pathway_mapfiles/KEGG_pathways_to_KO.tsv', header =FALSE, sep='\t')
+pth_2_ko <- read.csv('~/bioinfo_pipelines/picrust2-2.4.2/picrust2/default_files/pathway_mapfiles/KEGG_pathways_to_KO.tsv', header =FALSE, sep='\t') 
+#Convert empty strings as NA
+pth_2_ko[pth_2_ko==""] <- NA 
+
 #Filter to only Select KOs
 
 pth_2_ko <- pth_2_ko[pth_2_ko$V1 %in% rownames(deg_kos),]
+rownames(pth_2_ko) <- pth_2_ko[,1]
+pth_2_ko[,1] <- NULL
 
 #Retrieve Sample ids so I can call it as a variable 
 sample_ids <- c(as.character(sample_metadata$Sample.id))
 
-#retrieve BRITE hierarchy from KEGG using KEGGREST
-
-keggGet(dbentries = 'br08901')
 
 ```
 
@@ -83,21 +78,117 @@ ggplot_rel_plot <- ggplot(data=rel_nsti,mapping= aes(x=metadata_NSTI, y=rel.abun
 plot(ggplot_rel_plot)
 ```
 
-
-
 ```{r}
 #Generate Heatplot from unstratified KEGG plots
 
-#First convert the unstratified output to its long format
 
-row.names(unstrat_kegg) <- unstrat_kegg$description
-unstrat_kegg <- unstrat_kegg[,3:ncol(unstrat_kegg)]
-
-
-unstr_keg_mat <- data.matrix(unstrat_kegg,rownames.force = TRUE)
+row.names(unstrat_kegg) <- unstrat_kegg$pathway
+unstrat_kegg_no_desc <- unstrat_kegg[,2:ncol(unstrat_kegg)]
 
 
-heatmaply(percentize(unstr_keg_mat), Rowv=NA, Colv=NA)
+unstr_keg_mat <- data.matrix(unstrat_kegg_no_desc,rownames.force = TRUE)
+rel_abun_unstrkeg <- as.matrix(apply(unstr_keg_mat,2,function(x){x/sum(x)}))
 
 
+heatmap(rel_abun_unstrkeg, Rowv = FALSE, Colv = FALSE)
+
+
+```
+
+
+```{r}
+
+
+gen_mat <- function(df, ids){
+  df_mat <- as.matrix(select(df, ids))
+  return(df_mat)
+}
+
+#Generate Heatplot from unstratified KEGG plots
+
+#Filter unstrat based on deg_kos table
+
+unstr_keg_filtered <- subset(unstrat_kegg_no_desc, rownames(unstrat_kegg) %in% row.names(deg_kos)) 
+
+unstr_keg_filtered_mat <- as.matrix(unstr_keg_filtered[,2:ncol(unstr_keg_filtered)])
+
+
+#Plot heatmap based only on degradation
+
+heatmap.2(unstr_keg_filtered_mat, labRow = unstr_keg_filtered$description, key=TRUE, 
+          density.info = "none", dendrogram ="none", trace='none',
+          margins=c(10,24))
+
+```
+
+```{r}
+#Generate Heatplot from unstratified KOs per pathway in deg_kos
+#I'll generate one first then convert that to a function
+
+
+#This works na, what I did was generate a list of dataframes first then concatenated them afterwards. I can reuse the degdfs to generate individual 
+
+degdf_list <- list()
+
+for(i in 1:nrow(pth_2_ko)){
+  fun_list <- na.omit(unlist(pth_2_ko[i,]))
+  fun_df <- subset.data.frame(ko_unstrat, function. %in% fun_list)
+  fun_df$pathway <- rownames(pth_2_ko[i,])
+  degdf_list[[i]] <-fun_df
+}
+
+#Concatenate all dfs in degdf list
+deg_df = do.call(rbind, degdf_list)
+#The pathway column needs to be categorical pala para mag-work lol
+deg_df$pathway <- as.factor(deg_df$pathway)
+#reset index
+rownames(deg_df) <- NULL
+
+
+```
+```{r}
+
+#Define my color palettes
+#I just copied this from some guy's Stackx answer haha
+c16 <- c("dodgerblue2", "#E31A1C", "green4", "#6A3D9A", "#FF7F00", "black", "gold1", "skyblue2", "palegreen2", "#FDBF6F", "gray70", "maroon", "orchid1", "darkturquoise", "darkorange4", "brown") 
+
+heat_palette <- colorRampPalette(brewer.pal(3,'YlOrBr'))(n = 100)
+
+
+
+#Set Pathways as factor
+
+pdf(file = "./out/Per-gene-heatmap.pdf",   
+    width = 8, 
+    height = 11) 
+
+heatmap.2((gen_mat(deg_df, sample_ids)), 
+          labRow = deg_df$description, labCol = sample_metadata$treatment, 
+           key=TRUE, keysize=1, symkey=T, lhei = c(1,7), 
+          
+          Rowv = FALSE, Colv = FALSE,
+          density.info = "none", dendrogram ="none", trace='none', scale='row',
+          margins=c(10,30),
+          col = heat_palette,
+          RowSideColors=c16[as.numeric(deg_df$pathway)], na.color = 'black' )
+
+legend("left",      
+    legend = unique(deg_kos[deg_df$pathway,'description']),
+    col = c16[unique(deg_df$pathway)], 
+    inset = c(-0.11,0),
+    lty= 1,             
+    lwd = 5,
+    pch =14,
+    cex=.3,
+    xpd=T
+    )
+
+dev.off()
+
+```
+
+```{r}
+#Let's try making the heatmap using the ComplexHeatmaps library
+
+Heatmap(matrix=sqrt(gen_mat(deg_df,sample_ids)), show_row_dend = FALSE, show_column_dend = FALSE, label_ro)
 ```
