@@ -201,8 +201,13 @@ filt_rel_abun <- subset(rel_abun_unstrkeg, rownames(rel_abun_unstrkeg) %in% rown
 
 colors <- brewer.pal(11, "Paired")
 
+
+pdf(file='./out/Deg-pathway-relabunds.pdf', width = 5, height = 5)
+
+
 ggplot(filt_rel_abun, aes(x=sample.id, y=rel.abundance, fill=description)) +   geom_bar(position="stack", stat="identity") +
 scale_fill_manual(values=colors)
 
+dev.off()
 
 ```
