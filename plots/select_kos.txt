@@ -13,3 +13,4 @@ ko00930	Caprolactam degradation
 ko00642	Ethylbenzene degradation
 ko00626	Naphthalene degradation
 ko00623	Toluene degradation
+ko00071	Fatty acid degradation
