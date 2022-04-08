@@ -10,6 +10,7 @@ library(RColorBrewer)
 library(ggplot2)
 library(janitor)
 library(dplyr)
+library(roperators)
 ```
 
 ```{r}
@@ -105,8 +106,9 @@ gen_mat <- function(df, ids){
   return(df_mat)
 }
 
-#Generate Heatplot from unstratified KEGG plots
+#Generate Heatplot from unstratified KEGG plots, filtered only for xenobiotic degradation
 
+heat_palette <- colorRampPalette(brewer.pal(3,'YlOrBr'))(n = 100)
 #Filter unstrat based on deg_kos table
 
 unstr_keg_filtered <- subset(unstrat_kegg_no_desc, unstrat_kegg$pathway %in% row.names(deg_kos)) 
@@ -121,7 +123,8 @@ heatmap.2(gen_mat(unstr_keg_filtered,sample_ids),
           labRow = unstr_keg_filtered$description, 
           key=TRUE, keysize=1, symkey=T, lhei = c(1,7), 
           density.info = "none", dendrogram ="none", trace='none', scale='row',
-          margins=c(10,24))
+          
+          col = heat_palette, margins=c(10,24))
 
 dev.off()
 ```
@@ -139,6 +142,7 @@ for(i in 1:nrow(pth_2_ko)){
   fun_list <- na.omit(unlist(pth_2_ko[i,]))
   fun_df <- subset.data.frame(ko_unstrat, function. %in% fun_list)
   fun_df$pathway <- rownames(pth_2_ko[i,])
+  fun_df$pathway_desc <- deg_kos[fun_df$pathway,]
   degdf_list[[i]] <-fun_df
 }
 
@@ -146,9 +150,12 @@ for(i in 1:nrow(pth_2_ko)){
 deg_df = do.call(rbind, degdf_list)
 #The pathway column needs to be categorical pala para mag-work lol
 deg_df$pathway <- as.factor(deg_df$pathway)
+deg_df$pathway_desc <- as.factor(deg_df$pathway_desc)
 #reset index
 rownames(deg_df) <- NULL
 
+#Let's remove yung atrazine, dioxin, and styrene pathways
+deg_df  <- subset(deg_df, !(pathway %in% c('ko00791', 'ko00643', 'ko00621')))
 
 ```
 
@@ -158,33 +165,33 @@ rownames(deg_df) <- NULL
 #I just copied this from some guy's Stackx answer haha
 c16 <- c("dodgerblue2", "#E31A1C", "green4", "#6A3D9A", "#FF7F00", "black", "gold1", "skyblue2", "palegreen2", "#FDBF6F", "gray70", "maroon", "orchid1", "darkturquoise", "darkorange4", "brown") 
 
-heat_palette <- colorRampPalette(brewer.pal(3,'YlOrBr'))(n = 100)
 
 
 
 #Set Pathways as factor
 
 pdf(file = "./out/Per-gene-heatmap.pdf",   
-    width = 8, 
-    height = 11) 
+    width = 10, 
+    height = 20) 
 
 heatmap.2((gen_mat(deg_df, sample_ids)), 
           labRow = deg_df$description, labCol = sample_metadata$treatment, 
-           key=TRUE, keysize=1, symkey=T, lhei = c(1,7), 
+           key=TRUE, keysize=1, symkey=T, lhei = c(1,17), 
           Rowv = FALSE, Colv = FALSE,
           density.info = "none", dendrogram ="none", trace='none', scale='row',
-          margins=c(10,30),
+          margins=c(10,50),
           col = heat_palette,
-          RowSideColors=c16[as.numeric(deg_df$pathway)], na.color = 'black' )
+          cexRow = 0.7,
+          RowSideColors=c16[as.numeric(deg_df$pathway_desc)], na.color = 'black' )
 
 legend("left",      
-    legend = unique(deg_kos[deg_df$pathway,'description']),
-    col = c16[unique(deg_df$pathway)], 
-    inset = c(-0.11,0),
+    legend = unique(deg_df$pathway_desc),
+    col = c16[unique(deg_df$pathway_desc)], 
+    inset = c(-0.09,0),
     lty= 1,             
     lwd = 5,
     pch =14,
-    cex=.3,
+    cex=.45,
     xpd=T
     )
 
@@ -200,7 +207,7 @@ dev.off()
 #Filter then convert to long form so it's easier to plot
 filt_rel_abun <- subset(rel_abun_unstrkeg, rownames(rel_abun_unstrkeg) %in% rownames(deg_kos)) %>% melt(measure.vars = sample_ids, variable.name = 'sample.id', value.name ='rel.abundance') %>% mutate(across(description, factor))
 
-colors <- brewer.pal(11, "Paired")
+colors <- brewer.pal(12, "Paired")
 
 
 pdf(file='./out/Deg-pathway-relabunds.pdf', width = 5, height = 5)
