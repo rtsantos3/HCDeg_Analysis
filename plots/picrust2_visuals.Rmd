@@ -219,3 +219,10 @@ scale_fill_manual(values=colors)
 dev.off()
 
 ```
+
+```{r}
+
+#This code block is to summarize how many Kegg orthologs are identified for this study. THis is based on the database used by PICRUST2  which may have been curated to remove double entries.
+ko_counts <- group_by(deg_df, pathway_desc)
+ko_counts %>% count(pathway_desc)
+```
