@@ -93,7 +93,7 @@ unstr_keg_mat <- data.matrix(unstrat_kegg_no_desc,rownames.force = TRUE)
 #get relative abundance using adorn_percentages  (From Janitor package)
 rel_abun_unstrkeg <- adorn_percentages(unstrat_kegg_no_desc, denominator = "col")
 
-
+write.table(rel_abun_unstrkeg, file = './intermediate_files/unstratified_relative_abundance_KEGG.tsv', sep ='\t', col.names = T)
 
 ```
 
