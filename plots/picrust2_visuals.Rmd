@@ -11,6 +11,7 @@ library(ggplot2)
 library(janitor)
 library(dplyr)
 library(roperators)
+library(wesanderson)
 ```
 
 ```{r}
@@ -214,14 +215,18 @@ filt_rel_abun$rel.abundance <- filt_rel_abun$rel.abundance*100
 colors <- brewer.pal(12, "Paired")
 
 
-pdf(file='./out/Deg-pathway-relabunds.pdf', width = 5, height = 5)
+pdf(file='./out/Deg-pathway-relabunds.pdf', width = 8, height = 5)
 
 
-ggplot(filt_rel_abun, aes(x=sample.id, y=rel.abundance, fill=description)) +   geom_bar(position="stack", stat="identity") +
-scale_fill_manual(values=colors)
+plot3 <- ggplot(filt_rel_abun, aes(x=sample.id, y=rel.abundance, fill=description)) +   geom_bar(position="stack", stat="identity") +
+labs(title='Degradation pathway relative abundances', y='% relative pathway abundances') +scale_fill_manual(values=colors)
 
+
+plot(plot3)
 dev.off()
 
+
+plot(plot3)
 ```
 
 ```{r}
@@ -241,9 +246,12 @@ ko_counts %>% count(pathway_desc)
 # Bôto, M. L., Magalhães, C., Perdigão, R., Alexandrino, D. A., Fernandes, J. P., Bernabeu, A. M., ... & Mucha, A. P. (2021). Harnessing the potential of native microbial communities for bioremediation of oil spills in the Iberian Peninsula NW coast. Frontiers in microbiology, 12, 879.
 
 #Change taxon ids to family
-kegg_strat_relcounts <- strat_kegg %>% transmute(description, sample, taxon = taxa_vsearch[taxon, 'Family'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel
+kegg_strat_relcounts <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Family'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
 
-write.table(kegg_strat_relcounts, file = './intermediate_files/selected_relative_abundance_KEGG_pathways.tsv', sep ='\t', col.names = T)
+kegg_strat_relcounts$description <- factor(kegg_strat_relcounts$description)
+kegg_strat_relcounts$taxon <- factor(kegg_strat_relcounts$taxon)
+
+write.table(kegg_strat_relcounts, file =  './intermediate_files/selected_relative_abundance_KEGG_pathways.tsv', sep ='\t', col.names = T)
 
 
 kegg_strat_relcounts
@@ -256,6 +264,27 @@ kegg_strat_relcounts
 #This code block is to visualize the generated filtered table above 
 
 
+fam_list <- c(unique(kegg_strat_relcounts$taxon))
+fam_cols  <- colorRampPalette(brewer.pal(12, "Set3"))(18)
+
+
+pdf(file = "./out/Per-taxon-heatmap.pdf",   
+    width = 10, 
+    height = 7) 
+
+
+#This function plots all the stratified abundances in a single row
+plot4<- ggplot(kegg_strat_relcounts, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
+geom_bar(position="stack", stat="identity")  +   
+scale_fill_manual(values=fam_cols, drop=T) +
+labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
+
+
+plot(plot4)
+dev.off()
+
+
+
+plot(plot4)
+
 ```
-
-
