@@ -1,0 +1,49 @@
+"description"	"sample.id"	"rel.abundance"
+"1"	"Fatty acid metabolism"	"HC.DS"	0.64032872197908
+"2"	"Chlorocyclohexane and chlorobenzene degradation"	"HC.DS"	0.372043908133244
+"3"	"Benzoate degradation"	"HC.DS"	0.95888616932336
+"4"	"Dioxin degradation"	"HC.DS"	0.906606395829357
+"5"	"Xylene degradation"	"HC.DS"	0
+"6"	"Polycyclic aromatic hydrocarbon degradation"	"HC.DS"	0
+"7"	"Chloroalkane and chloroalkene degradation"	"HC.DS"	0.302114965561353
+"8"	"Aminobenzoate degradation"	"HC.DS"	0.458967681719794
+"9"	"Nitrotoluene degradation"	"HC.DS"	0.269444917961782
+"10"	"Styrene degradation"	"HC.DS"	0.300791336910405
+"11"	"Atrazine degradation"	"HC.DS"	0.381514386644267
+"12"	"Caprolactam degradation"	"HC.DS"	0.657572105101492
+"13"	"Fatty acid metabolism"	"HC.XY"	0.752018657854454
+"14"	"Chlorocyclohexane and chlorobenzene degradation"	"HC.XY"	0.390776810113665
+"15"	"Benzoate degradation"	"HC.XY"	1.03978600101711
+"16"	"Dioxin degradation"	"HC.XY"	0.852416952895368
+"17"	"Xylene degradation"	"HC.XY"	0
+"18"	"Polycyclic aromatic hydrocarbon degradation"	"HC.XY"	0.162523587686784
+"19"	"Chloroalkane and chloroalkene degradation"	"HC.XY"	0.333890454503866
+"20"	"Aminobenzoate degradation"	"HC.XY"	0.541917545152048
+"21"	"Nitrotoluene degradation"	"HC.XY"	0.260039535073365
+"22"	"Styrene degradation"	"HC.XY"	0.368551443920255
+"23"	"Atrazine degradation"	"HC.XY"	0.435577283807413
+"24"	"Caprolactam degradation"	"HC.XY"	0.828437470397666
+"25"	"Fatty acid metabolism"	"HC.HX"	0.697283278022554
+"26"	"Chlorocyclohexane and chlorobenzene degradation"	"HC.HX"	0.402645432552055
+"27"	"Benzoate degradation"	"HC.HX"	1.04229739203766
+"28"	"Dioxin degradation"	"HC.HX"	0.963657367880976
+"29"	"Xylene degradation"	"HC.HX"	0
+"30"	"Polycyclic aromatic hydrocarbon degradation"	"HC.HX"	0
+"31"	"Chloroalkane and chloroalkene degradation"	"HC.HX"	0
+"32"	"Aminobenzoate degradation"	"HC.HX"	0.506680384686932
+"33"	"Nitrotoluene degradation"	"HC.HX"	0.269631494248544
+"34"	"Styrene degradation"	"HC.HX"	0.332963590603104
+"35"	"Atrazine degradation"	"HC.HX"	0
+"36"	"Caprolactam degradation"	"HC.HX"	0.742237924906929
+"37"	"Fatty acid metabolism"	"HC.HD"	0.660417480058565
+"38"	"Chlorocyclohexane and chlorobenzene degradation"	"HC.HD"	0.383978157822741
+"39"	"Benzoate degradation"	"HC.HD"	0.944514495763903
+"40"	"Dioxin degradation"	"HC.HD"	0.888280177557845
+"41"	"Xylene degradation"	"HC.HD"	0.537371756934581
+"42"	"Polycyclic aromatic hydrocarbon degradation"	"HC.HD"	0
+"43"	"Chloroalkane and chloroalkene degradation"	"HC.HD"	0.396204056423682
+"44"	"Aminobenzoate degradation"	"HC.HD"	0.459884579007933
+"45"	"Nitrotoluene degradation"	"HC.HD"	0.247868955762724
+"46"	"Styrene degradation"	"HC.HD"	0.325255292328107
+"47"	"Atrazine degradation"	"HC.HD"	0
+"48"	"Caprolactam degradation"	"HC.HD"	0.667549495119245
