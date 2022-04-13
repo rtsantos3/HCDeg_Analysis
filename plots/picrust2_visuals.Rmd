@@ -114,6 +114,8 @@ heat_palette <- colorRampPalette(brewer.pal(3,'YlOrBr'))(n = 100)
 unstr_keg_filtered <- subset(unstrat_kegg_no_desc, unstrat_kegg$pathway %in% row.names(deg_kos)) 
 
 
+
+
 #Plot heatmap based only on degradation
 pdf(file = "./out/KEGG-pathway-heatmap.pdf",   
     width = 8, 
@@ -205,7 +207,9 @@ dev.off()
 
 
 #Filter then convert to long form so it's easier to plot
-filt_rel_abun <- subset(rel_abun_unstrkeg, rownames(rel_abun_unstrkeg) %in% rownames(deg_kos)) %>% melt(measure.vars = sample_ids, variable.name = 'sample.id', value.name ='rel.abundance') %>% mutate(across(description, factor))
+filt_rel_abun <- subset(rel_abun_unstrkeg, rownames(rel_abun_unstrkeg) %in% rownames(deg_kos)) %>% melt(measure.vars = sample_ids, variable.name = 'sample.id', value.name ='rel.abundance') %>% mutate(across(description, factor)) 
+#Convert to percent
+filt_rel_abun$rel.abundance <- filt_rel_abun$rel.abundance*100
 
 colors <- brewer.pal(12, "Paired")
 
@@ -222,7 +226,36 @@ dev.off()
 
 ```{r}
 
-#This code block is to summarize how many Kegg orthologs are identified for this study. THis is based on the database used by PICRUST2  which may have been curated to remove double entries.
+#This code block is to summarize how many Kegg orthologs are identified for this study. This is based on the database used by PICRUST2  which may have been curated to remove double entries.
 ko_counts <- group_by(deg_df, pathway_desc)
 ko_counts %>% count(pathway_desc)
 ```
+
+
+```{r}
+
+#Lastly, this code block is to summarize each of the KOs on a per taxa basis. We'll be using the stratified code block here. The methodology is based on Boto et al (2019) where the absolute counts of each taxa (taxon_function_abun) were summarized. For simplicity's  sake we will be aggregating each per family (as determined by the classification method (Vsearch) used to type the ASVs using Qiime2)
+
+
+# 
+# Bôto, M. L., Magalhães, C., Perdigão, R., Alexandrino, D. A., Fernandes, J. P., Bernabeu, A. M., ... & Mucha, A. P. (2021). Harnessing the potential of native microbial communities for bioremediation of oil spills in the Iberian Peninsula NW coast. Frontiers in microbiology, 12, 879.
+
+#Change taxon ids to family
+kegg_strat_relcounts <- strat_kegg %>% transmute(description, sample, taxon = taxa_vsearch[taxon, 'Family'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel
+
+write.table(kegg_strat_relcounts, file = './intermediate_files/selected_relative_abundance_KEGG_pathways.tsv', sep ='\t', col.names = T)
+
+
+kegg_strat_relcounts
+
+
+```
+
+
+```{r}
+#This code block is to visualize the generated filtered table above 
+
+
+```
+
+
