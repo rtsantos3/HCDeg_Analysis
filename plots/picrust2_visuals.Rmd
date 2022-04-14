@@ -212,6 +212,11 @@ filt_rel_abun <- subset(rel_abun_unstrkeg, rownames(rel_abun_unstrkeg) %in% rown
 #Convert to percent
 filt_rel_abun$rel.abundance <- filt_rel_abun$rel.abundance*100
 
+
+write.table(filt_rel_abun, file =  './intermediate_files/out-Deg-pathway-relabunds.tsv', sep ='\t', col.names = T)
+
+
+
 colors <- brewer.pal(12, "Paired")
 
 
@@ -251,7 +256,7 @@ kegg_strat_relcounts <- strat_kegg %>% transmute(description = as.factor(descrip
 kegg_strat_relcounts$description <- factor(kegg_strat_relcounts$description)
 kegg_strat_relcounts$taxon <- factor(kegg_strat_relcounts$taxon)
 
-write.table(kegg_strat_relcounts, file =  './intermediate_files/selected_relative_abundance_KEGG_pathways.tsv', sep ='\t', col.names = T)
+write.table(kegg_strat_relcounts, file =  './intermediate_files/selected_relative_abundance_KEGG_pathways (stratified).tsv', sep ='\t', col.names = T)
 
 
 kegg_strat_relcounts
