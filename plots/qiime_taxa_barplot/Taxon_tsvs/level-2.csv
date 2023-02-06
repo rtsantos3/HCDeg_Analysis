@@ -1,0 +1,5 @@
+index,d__Bacteria;p__Firmicutes,d__Bacteria;p__Proteobacteria,d__Bacteria;p__Bacteroidota,d__Bacteria;p__Actinobacteriota,source,Samplesite,Subsamplesite,treatment
+HC-DS,2611.0,19209.0,0.0,0.0,consortia,B,2-2,Diesel
+HC-HD,2201.0,22872.0,29.0,0.0,consortia,A,5-1,Hexadecane
+HC-HX,139.0,22967.0,48.0,2.0,consortia,B,1-1,Hexane
+HC-XY,1210.0,22398.0,0.0,0.0,consortia,B,7-1,Xylene

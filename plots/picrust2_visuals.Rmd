@@ -19,7 +19,7 @@ library(wesanderson)
 #This code block is to stage all the files needed for visualization
 
 
-#Stage taxonomy file using Qiime2R
+#Stage taxonomy file using Qiime2
 taxa_vsearch <- parse_taxonomy(taxonomy = read_qza('../taxonomy_vsearch/classification.qza')$data)
 taxa_blast <- parse_taxonomy(taxonomy = read_qza('../taxonomy_blast/classification-blast.qza')$data)
 
@@ -51,7 +51,7 @@ rownames(pth_2_ko) <- pth_2_ko[,1]
 pth_2_ko[,1] <- NULL
 
 #Retrieve Sample ids so I can call it as a variable 
-sample_ids <- c(as.character(sample_metadata$Sample.id))
+sample_ids <- c('HC.DS','HC.XY','HC.HX','HC.HD')
 
 
 ```
@@ -82,9 +82,26 @@ plot(ggplot_rel_plot)
 #No need to present this. This is just a diagnostic plot
 ```
 
-```{r}
-#Generate Heatplot from unstratified KEGG plots
 
+```{r}
+#This codeblock is for concatenation and export of feature counts together with their taxonomies
+
+
+Feature_counts_taxa <- cbind(taxa_vsearch, rel_count_otu * 100) 
+
+fam_counts_sum <- Feature_counts_taxa %>% group_by(Family) %>% summarize_at(samps, sum)
+
+genus_counts_sum <- Feature_counts_taxa %>% group_by(Genus) %>% summarize_at(samps, sum)
+
+class_counts_sum <- Feature_counts_taxa %>% group_by(Class) %>% summarize_at(samps, sum)
+
+write.table(Feature_counts_taxa, '../dada2/Summary_taxa_feature_table.tsv', sep ='\t', col.names = T, row.names = T)
+write.table(genus_counts_sum, '../dada2/Summary_genus_feature_table.tsv', sep ='\t', col.names = T, row.names = T)
+
+```
+
+```{r}
+#Generate table for unstratified relative abundances
 
 row.names(unstrat_kegg) <- unstrat_kegg$pathway
 unstrat_kegg_no_desc <- unstrat_kegg[,2:ncol(unstrat_kegg)]
@@ -251,12 +268,15 @@ ko_counts %>% count(pathway_desc)
 # Bôto, M. L., Magalhães, C., Perdigão, R., Alexandrino, D. A., Fernandes, J. P., Bernabeu, A. M., ... & Mucha, A. P. (2021). Harnessing the potential of native microbial communities for bioremediation of oil spills in the Iberian Peninsula NW coast. Frontiers in microbiology, 12, 879.
 
 #Change taxon ids to family
-kegg_strat_relcounts <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Family'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
+kegg_strat_relcounts <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Genus'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
 
 kegg_strat_relcounts$description <- factor(kegg_strat_relcounts$description)
 kegg_strat_relcounts$taxon <- factor(kegg_strat_relcounts$taxon)
 
+#Finally, aggregate any families
+
 write.table(kegg_strat_relcounts, file =  './intermediate_files/selected_relative_abundance_KEGG_pathways (stratified).tsv', sep ='\t', col.names = T)
+
 
 
 kegg_strat_relcounts
@@ -293,3 +313,16 @@ dev.off()
 plot(plot4)
 
 ```
+
+
+```{r}
+
+
+class_counts_sum <- class_counts_sum %>% transmute()
+
+kegg_strat_relcounts <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Genus'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
+
+```
+
+
+
