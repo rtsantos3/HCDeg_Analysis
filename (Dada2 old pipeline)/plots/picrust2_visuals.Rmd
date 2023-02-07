@@ -1,0 +1,328 @@
+
+```{r}
+library(qiime2R)
+library(tidyr)
+library(microbiome)
+library(compositions)
+library(reshape2)
+library(gplots)
+library(RColorBrewer)
+library(ggplot2)
+library(janitor)
+library(dplyr)
+library(roperators)
+library(wesanderson)
+```
+
+```{r}
+
+#This code block is to stage all the files needed for visualization
+
+
+#Stage taxonomy file using Qiime2
+taxa_vsearch <- parse_taxonomy(taxonomy = read_qza('../taxonomy_vsearch/classification.qza')$data)
+taxa_blast <- parse_taxonomy(taxonomy = read_qza('../taxonomy_blast/classification-blast.qza')$data)
+
+#Stage metadata file
+sample_metadata <- read.csv('../read-files/metadata.tsv', sep='\t')
+
+#Stage unstratified/strat kegg pathway files
+unstrat_kegg <- read.csv('../picrust2-strat/out/KEGG_pathways_out/path_abun_unstrat.tsv', sep = '\t')
+strat_kegg <- read.csv('../picrust2-strat/out/KEGG_pathways_out/path_abun_strat.tsv', sep = '\t')
+
+#Stage unstrat/strat KEGG ortholog files 
+ko_unstrat <- read.csv('../picrust2-strat/out/KO_metagenome_out/unstrat_ko_metagenome.tsv', sep = '\t')
+ko_strat <- read.csv('../picrust2-strat/out/KO_metagenome_out/strat_ko_metagenome.tsv', sep = '\t')
+
+#Open selected KOs (for plotting relevant Kegg pathways)
+deg_kos <- read.csv('./select_kos.txt', sep = '\t', header = TRUE)
+rownames(deg_kos) <- deg_kos[,1]
+deg_kos[,1] <- NULL
+
+#open the pathway to ko file
+pth_2_ko <- read.csv('~/bioinfo_pipelines/picrust2-2.4.2/picrust2/default_files/pathway_mapfiles/KEGG_pathways_to_KO.tsv', header =FALSE, sep='\t') 
+#Convert empty strings as NA
+pth_2_ko[pth_2_ko==""] <- NA 
+
+#Filter to only Select KOs
+
+pth_2_ko <- pth_2_ko[pth_2_ko$V1 %in% rownames(deg_kos),]
+rownames(pth_2_ko) <- pth_2_ko[,1]
+pth_2_ko[,1] <- NULL
+
+#Retrieve Sample ids so I can call it as a variable 
+sample_ids <- c('HC.DS','HC.XY','HC.HX','HC.HD')
+
+
+```
+
+
+```{r}
+
+#This code block is to load the required files to plot NSTI vs relative abundance
+abs_count_otu <-  read_qza(file = '../dada2/table.qza')$data
+rel_count_otu <- as.data.frame(apply(abs_count_otu,2,function(x){x/sum(x)}))
+nsti_asvs <- as.data.frame(read.csv('../picrust2-strat/out/marker_predicted_and_nsti.tsv.gz', sep='\t', row.names = 1))
+
+
+rel_nsti <- merge(nsti_asvs,rel_count_otu,by="row.names",all.x=TRUE)
+
+samps <- c('HC-DS','HC-XY','HC-HX','HC-HD')
+rel_nsti <- melt(rel_nsti, measure.vars = samps, variable.name = 'sample.id', value.name = 'rel.abundance')
+
+
+#Group accding to consortia
+
+
+
+ggplot_rel_plot <- ggplot(data=rel_nsti,mapping= aes(x=metadata_NSTI, y=rel.abundance, color=sample.id)) + geom_point()
+
+plot(ggplot_rel_plot)
+
+#No need to present this. This is just a diagnostic plot
+```
+
+
+```{r}
+#This codeblock is for concatenation and export of feature counts together with their taxonomies
+
+
+Feature_counts_taxa <- cbind(taxa_vsearch, rel_count_otu * 100) 
+
+fam_counts_sum <- Feature_counts_taxa %>% group_by(Family) %>% summarize_at(samps, sum)
+
+genus_counts_sum <- Feature_counts_taxa %>% group_by(Genus) %>% summarize_at(samps, sum)
+
+class_counts_sum <- Feature_counts_taxa %>% group_by(Class) %>% summarize_at(samps, sum)
+
+write.table(Feature_counts_taxa, '../dada2/Summary_taxa_feature_table.tsv', sep ='\t', col.names = T, row.names = T)
+write.table(genus_counts_sum, '../dada2/Summary_genus_feature_table.tsv', sep ='\t', col.names = T, row.names = T)
+
+```
+
+```{r}
+#Generate table for unstratified relative abundances
+
+row.names(unstrat_kegg) <- unstrat_kegg$pathway
+unstrat_kegg_no_desc <- unstrat_kegg[,2:ncol(unstrat_kegg)]
+
+
+unstr_keg_mat <- data.matrix(unstrat_kegg_no_desc,rownames.force = TRUE)
+#get relative abundance using adorn_percentages  (From Janitor package)
+rel_abun_unstrkeg <- adorn_percentages(unstrat_kegg_no_desc, denominator = "col")
+
+write.table(rel_abun_unstrkeg, file = './intermediate_files/unstratified_relative_abundance_KEGG.tsv', sep ='\t', col.names = T)
+
+```
+
+
+```{r}
+
+
+gen_mat <- function(df, ids){
+  df_mat <- as.matrix(select(df, ids))
+  return(df_mat)
+}
+
+#Generate Heatplot from unstratified KEGG plots, filtered only for xenobiotic degradation
+
+heat_palette <- colorRampPalette(brewer.pal(3,'YlOrBr'))(n = 100)
+#Filter unstrat based on deg_kos table
+
+unstr_keg_filtered <- subset(unstrat_kegg_no_desc, unstrat_kegg$pathway %in% row.names(deg_kos)) 
+
+
+
+
+#Plot heatmap based only on degradation
+pdf(file = "./out/KEGG-pathway-heatmap.pdf",   
+    width = 8, 
+    height = 11) 
+
+heatmap.2(gen_mat(unstr_keg_filtered,sample_ids), 
+          labRow = unstr_keg_filtered$description, 
+          key=TRUE, keysize=1, symkey=T, lhei = c(1,7), 
+          density.info = "none", dendrogram ="none", trace='none', scale='row',
+          
+          col = heat_palette, margins=c(10,24))
+
+dev.off()
+```
+
+```{r}
+#Generate Heatplot from unstratified KOs per pathway in deg_kos
+#I'll generate one first then convert that to a function
+
+
+#This works na, what I did was generate a list of dataframes first then concatenated them afterwards. I can reuse the degdfs to generate individual 
+
+degdf_list <- list()
+
+for(i in 1:nrow(pth_2_ko)){
+  fun_list <- na.omit(unlist(pth_2_ko[i,]))
+  fun_df <- subset.data.frame(ko_unstrat, function. %in% fun_list)
+  fun_df$pathway <- rownames(pth_2_ko[i,])
+  fun_df$pathway_desc <- deg_kos[fun_df$pathway,]
+  degdf_list[[i]] <-fun_df
+}
+
+#Concatenate all dfs in degdf list
+deg_df = do.call(rbind, degdf_list)
+#The pathway column needs to be categorical pala para mag-work lol
+deg_df$pathway <- as.factor(deg_df$pathway)
+deg_df$pathway_desc <- as.factor(deg_df$pathway_desc)
+#reset index
+rownames(deg_df) <- NULL
+
+#Let's remove yung atrazine, dioxin, and styrene pathways
+deg_df  <- subset(deg_df, !(pathway %in% c('ko00791', 'ko00643', 'ko00621')))
+
+```
+
+```{r}
+
+#Define my color palettes
+#I just copied this from some guy's Stackx answer haha
+c16 <- c("dodgerblue2", "#E31A1C", "green4", "#6A3D9A", "#FF7F00", "black", "gold1", "skyblue2", "palegreen2", "#FDBF6F", "gray70", "maroon", "orchid1", "darkturquoise", "darkorange4", "brown") 
+
+
+
+
+#Set Pathways as factor
+
+pdf(file = "./out/Per-gene-heatmap.pdf",   
+    width = 10, 
+    height = 20) 
+
+heatmap.2((gen_mat(deg_df, sample_ids)), 
+          labRow = deg_df$description, labCol = sample_metadata$treatment, 
+           key=TRUE, keysize=1, symkey=T, lhei = c(1,17), 
+          Rowv = FALSE, Colv = FALSE,
+          density.info = "none", dendrogram ="none", trace='none', scale='row',
+          margins=c(10,50),
+          col = heat_palette,
+          cexRow = 0.7,
+          RowSideColors=c16[as.numeric(deg_df$pathway_desc)], na.color = 'black' )
+
+legend("left",      
+    legend = unique(deg_df$pathway_desc),
+    col = c16[unique(deg_df$pathway_desc)], 
+    inset = c(-0.09,0),
+    lty= 1,             
+    lwd = 5,
+    pch =14,
+    cex=.45,
+    xpd=T
+    )
+
+dev.off()
+
+```
+
+```{r}
+
+#Generate Cumulative relative abundances per consortia for specific degradation pathways
+
+
+#Filter then convert to long form so it's easier to plot
+filt_rel_abun <- subset(rel_abun_unstrkeg, rownames(rel_abun_unstrkeg) %in% rownames(deg_kos)) %>% melt(measure.vars = sample_ids, variable.name = 'sample.id', value.name ='rel.abundance') %>% mutate(across(description, factor)) 
+#Convert to percent
+filt_rel_abun$rel.abundance <- filt_rel_abun$rel.abundance*100
+
+
+write.table(filt_rel_abun, file =  './intermediate_files/out-Deg-pathway-relabunds.tsv', sep ='\t', col.names = T)
+
+
+
+colors <- brewer.pal(12, "Paired")
+
+
+pdf(file='./out/Deg-pathway-relabunds.pdf', width = 8, height = 5)
+
+
+plot3 <- ggplot(filt_rel_abun, aes(x=sample.id, y=rel.abundance, fill=description)) +   geom_bar(position="stack", stat="identity") +
+labs(title='Degradation pathway relative abundances', y='% relative pathway abundances') +scale_fill_manual(values=colors)
+
+
+plot(plot3)
+dev.off()
+
+
+plot(plot3)
+```
+
+```{r}
+
+#This code block is to summarize how many Kegg orthologs are identified for this study. This is based on the database used by PICRUST2  which may have been curated to remove double entries.
+ko_counts <- group_by(deg_df, pathway_desc)
+ko_counts %>% count(pathway_desc)
+```
+
+
+```{r}
+
+#Lastly, this code block is to summarize each of the KOs on a per taxa basis. We'll be using the stratified code block here. The methodology is based on Boto et al (2019) where the absolute counts of each taxa (taxon_function_abun) were summarized. For simplicity's  sake we will be aggregating each per family (as determined by the classification method (Vsearch) used to type the ASVs using Qiime2)
+
+
+# 
+# Bôto, M. L., Magalhães, C., Perdigão, R., Alexandrino, D. A., Fernandes, J. P., Bernabeu, A. M., ... & Mucha, A. P. (2021). Harnessing the potential of native microbial communities for bioremediation of oil spills in the Iberian Peninsula NW coast. Frontiers in microbiology, 12, 879.
+
+#Change taxon ids to family
+kegg_strat_relcounts <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Genus'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
+
+kegg_strat_relcounts$description <- factor(kegg_strat_relcounts$description)
+kegg_strat_relcounts$taxon <- factor(kegg_strat_relcounts$taxon)
+
+#Finally, aggregate any families
+
+write.table(kegg_strat_relcounts, file =  './intermediate_files/selected_relative_abundance_KEGG_pathways (stratified).tsv', sep ='\t', col.names = T)
+
+
+
+kegg_strat_relcounts
+
+
+```
+
+
+```{r}
+#This code block is to visualize the generated filtered table above 
+
+
+fam_list <- c(unique(kegg_strat_relcounts$taxon))
+fam_cols  <- colorRampPalette(brewer.pal(12, "Set3"))(18)
+
+
+pdf(file = "./out/Per-taxon-heatmap.pdf",   
+    width = 10, 
+    height = 7) 
+
+
+#This function plots all the stratified abundances in a single row
+plot4<- ggplot(kegg_strat_relcounts, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
+geom_bar(position="stack", stat="identity")  +   
+scale_fill_manual(values=fam_cols, drop=T) +
+labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
+
+
+plot(plot4)
+dev.off()
+
+
+
+plot(plot4)
+
+```
+
+
+```{r}
+
+
+class_counts_sum <- class_counts_sum %>% transmute()
+
+kegg_strat_relcounts <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Genus'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
+
+```
+
+
+
