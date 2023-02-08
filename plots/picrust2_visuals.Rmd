@@ -414,7 +414,7 @@ kegg_strat_relcounts
 
 
 fam_list <- c(unique(kegg_strat_relcounts$taxon))
-fam_cols  <- colorRampPalette(brewer.pal(12, "Accent"))(18)
+fam_cols  <- colorRampPalette(brewer.pal(12, "Paired"))(20)
 
 
 pdf(file = "./out/Per-Family-KEGG-Relcounts.pdf",   
@@ -461,6 +461,7 @@ plot(plot5)
 
 
 ```{r}
+fam_cols2  <- wes_palette("Darjeeling2", 12, type = "continuous")
 
 kegg_strat_relcounts_phylum <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Phylum'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
 
@@ -471,7 +472,7 @@ pdf(file = "./out/Per-phylum-relcounts-KEGG.pdf",
 
 plot6<- ggplot(kegg_strat_relcounts_phylum, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
 geom_bar(position="stack", stat="identity")  +   
-scale_fill_manual(values=fam_cols, drop=T) +
+scale_fill_manual(values=fam_cols2, drop=T) +
 labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
 
 plot(plot6)
@@ -492,7 +493,7 @@ pdf(file = "./out/Per-class-relcounts-KEGG.pdf",
 
 plot7 <- ggplot(kegg_strat_relcounts_class, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
 geom_bar(position="stack", stat="identity")  +   
-scale_fill_manual(values=fam_cols, drop=T) +
+scale_fill_manual(values=fam_cols2, drop=T) +
 labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
 
 plot(plot7)
@@ -527,5 +528,25 @@ plot(plot8)
 
 
 
+```{r}
+
+kegg_strat_relcounts_genus <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = ifelse(is.na(taxa_vsearch[taxon,'Genus'])==TRUE,taxa_vsearch[taxon, 'Family'], taxa_vsearch[taxon,'Genus']), taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
+
+
+pdf(file = "./out/Per-GenusFam-relcounts-KEGG.pdf",   
+    width = 10, 
+    height = 9) 
+
+plot8 <- ggplot(kegg_strat_relcounts_genus, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
+geom_bar(position="stack", stat="identity")  +   
+scale_fill_manual(values=fam_cols, drop=T) +
+labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
+
+plot(plot8)
+dev.off()
+
+plot(plot8)
+
+```
 
 
