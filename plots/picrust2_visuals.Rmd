@@ -14,7 +14,7 @@ library(dplyr)
 library(roperators)
 library(ggpubr)
 library(wesanderson)
-library(miaviz)
+
 ```
 
 ```{r}
@@ -564,12 +564,73 @@ pdf(file = "./out/Stacked-GenusFam-relcounts-KEGG.pdf",
 ggarrange(plot6, plot9, nrow = 2, align ='v')
 ```
 
+```{r}
+
+
+#Stage taxonomy file using Qiime2
+taxa_vsearch <- parse_taxonomy(taxonomy = read_qza('../taxonomy_vsearch/classification.qza')$data)
+# taxa_blast <- parse_taxonomy(taxonomy = read_qza('../taxonomy_blast/classification-blast.qza')$data)
+
+#Stage metadata file
+sample_metadata <- read.csv('../read-files/metadata.tsv', sep='\t')
+
+#Stage unstratified/strat kegg pathway files
+unstrat_kegg <- read.csv('../picrust2-strat/out/KEGG_pathways_out/path_abun_unstrat.tsv.gz', sep = '\t')
+strat_kegg <- read.csv('../picrust2-strat/out/KEGG_pathways_out/path_abun_contrib.tsv.gz', sep = '\t')
+
+#Stage unstrat/strat KEGG ortholog files 
+ko_unstrat <- read.csv('../picrust2-strat/out/KO_metagenome_out/pred_metagenome_unstrat.tsv.gz', sep = '\t')
+ko_strat <- read.csv('../picrust2-strat/out/KO_metagenome_out/pred_metagenome_contrib.tsv.gz', sep = '\t')
+
+#Open selected KOs (for plotting relevant Kegg pathways)
+deg_kos <- read.csv('./select_kos.txt', sep = '\t', header = TRUE)
+rownames(deg_kos) <- deg_kos[,1]
+deg_kos[,1] <- NULL
+
+#open the pathway to ko file
+pth_2_ko <- read.csv('~/bioinfo_pipelines/picrust2-2.4.2/picrust2/default_files/pathway_mapfiles/KEGG_pathways_to_KO.tsv', header =FALSE, sep='\t') 
+#Convert empty strings as NA
+pth_2_ko[pth_2_ko==""] <- NA 
+
+#Filter to only Select KOs
+
+pth_2_ko <- pth_2_ko[pth_2_ko$V1 %in% rownames(deg_kos),]
+rownames(pth_2_ko) <- pth_2_ko[,1]
+pth_2_ko[,1] <- NULL
+
+#Retrieve Sample ids so I can call it as a variable 
+sample_ids <- c('HC.DS','HC.XY','HC.HX','HC.HD')
+
+
+```
+
 
 ```{r}
-#This code block is to make a relative abundance graph for each of the 16S 
 
-otu_rel_abundance <- otu_counts %>% 
-  mutate(total_count = colSums(.)) %>% 
-  mutate(across(-total_count, ~. / total_count * 100))
+#This code block is to load the required files to plot NSTI vs relative abundance
+abs_count_otu_qza <-  '../dada2/table.qza'
+
+taxa_vsearch_qza <- '../taxonomy_vsearch/classification.qza'
+
+fam_cols <- distinctColorPalette(20)
+
+#Try generating Phyloseq object
+phyloseq_qza <- qza_to_phyloseq(features = abs_count_otu_qza, taxonomy = taxa_vsearch_qza, metadata = '../read-files/metadata.tsv')
+
+colors <- fam_cols
 
 
+
+pdf(file = "./out/16S-abs-otu-plot-Class.pdf",   
+    width = 6, 
+    height = 14) 
+
+
+
+phy_fam <- phyloseq_qza %>% aggregate_taxa(level = "Class") 
+# %>% microbiome::transform(transform = 'compositional')
+rel_abund_plots <- plot_composition(x = phy_fam,otu.sort = 'abundance') + 
+  scale_fill_manual(values = fam_cols)
+
+plot(rel_abund_plots)
+```
