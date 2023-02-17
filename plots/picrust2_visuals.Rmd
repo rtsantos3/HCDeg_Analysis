@@ -9,9 +9,12 @@ library(gplots)
 library(RColorBrewer)
 library(ggplot2)
 library(janitor)
+library(randomcoloR)
 library(dplyr)
 library(roperators)
+library(ggpubr)
 library(wesanderson)
+library(miaviz)
 ```
 
 ```{r}
@@ -414,8 +417,7 @@ kegg_strat_relcounts
 
 
 fam_list <- c(unique(kegg_strat_relcounts$taxon))
-fam_cols  <- colorRampPalette(c("#001219","#005f73","#0a9396","#94d2bd","#e9d8a6","#ee9b00","#ca6702","#bb3e03","#ae2012","#9b2226"))(20)
-
+fam_cols  <- distinctColorPalette(20)
 
 pdf(file = "./out/Per-Family-KEGG-Relcounts.pdf",   
     width = 12, 
@@ -442,9 +444,10 @@ plot(plot4)
 
 kegg_strat_relcounts_order <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Order'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
 
+fam_cols  <- distinctColorPalette(20)
 
 pdf(file = "./out/Per-order-relcounts-KEGG.pdf",   
-    width = 10, 
+    width = 14, 
     height = 7) 
 
 plot5<- ggplot(kegg_strat_relcounts_order, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
@@ -461,13 +464,13 @@ plot(plot5)
 
 
 ```{r}
-fam_cols2  <- c("001219","005f73","0a9396","94d2bd","e9d8a6","ee9b00","ca6702","bb3e03","ae2012","9b2226")
+fam_cols  <- distinctColorPalette(20)
 
 kegg_strat_relcounts_phylum <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Phylum'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
 
 
 pdf(file = "./out/Per-phylum-relcounts-KEGG.pdf",   
-    width = 10, 
+    width = 14, 
     height = 7) 
 
 plot6<- ggplot(kegg_strat_relcounts_phylum, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
@@ -488,7 +491,7 @@ kegg_strat_relcounts_class <- strat_kegg %>% transmute(description = as.factor(d
 
 
 pdf(file = "./out/Per-class-relcounts-KEGG.pdf",   
-    width = 10, 
+    width = 14, 
     height = 7) 
 
 plot7 <- ggplot(kegg_strat_relcounts_class, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
@@ -534,8 +537,8 @@ kegg_strat_relcounts_genus <- strat_kegg %>% transmute(description = as.factor(d
 
 
 pdf(file = "./out/Per-GenusFam-relcounts-KEGG.pdf",   
-    width = 10, 
-    height = 9) 
+    width = 14, 
+    height = 7) 
 
 plot9 <- ggplot(kegg_strat_relcounts_genus, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
 geom_bar(position="stack", stat="identity")  +   
@@ -560,3 +563,13 @@ pdf(file = "./out/Stacked-GenusFam-relcounts-KEGG.pdf",
 
 ggarrange(plot6, plot9, nrow = 2, align ='v')
 ```
+
+
+```{r}
+#This code block is to make a relative abundance graph for each of the 16S 
+
+otu_rel_abundance <- otu_counts %>% 
+  mutate(total_count = colSums(.)) %>% 
+  mutate(across(-total_count, ~. / total_count * 100))
+
+
