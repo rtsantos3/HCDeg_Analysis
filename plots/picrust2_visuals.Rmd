@@ -621,14 +621,13 @@ colors <- fam_cols
 
 
 
-pdf(file = "./out/16S-abs-otu-plot-Class.pdf",   
+pdf(file = "./out/16S-relative-otu-plot-Class.pdf",   
     width = 6, 
-    height = 14) 
+    height = 15) 
 
 
 
-phy_fam <- phyloseq_qza %>% aggregate_taxa(level = "Class") 
-# %>% microbiome::transform(transform = 'compositional')
+phy_fam <- phyloseq_qza %>% aggregate_taxa(level = "Class")  %>% microbiome::transform(transform = 'compositional')
 rel_abund_plots <- plot_composition(x = phy_fam,otu.sort = 'abundance') + 
   scale_fill_manual(values = fam_cols)
 
