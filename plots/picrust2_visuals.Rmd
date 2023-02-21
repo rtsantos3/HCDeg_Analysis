@@ -608,7 +608,7 @@ sample_ids <- c('HC.DS','HC.XY','HC.HX','HC.HD')
 ```{r}
 
 #This code block is to load the required files to plot NSTI vs relative abundance
-abs_count_otu_qza <-  '../dada2/table.qza'
+abs_count_otu_qza <-  '../dada2/filtered_table.qza'
 
 taxa_vsearch_qza <- '../taxonomy_vsearch/classification.qza'
 
@@ -621,15 +621,53 @@ colors <- fam_cols
 
 
 
-pdf(file = "./out/16S-relative-otu-plot-Class.pdf",   
-    width = 6, 
-    height = 15) 
+
+phy_fam_abs <- phyloseq_qza %>% tax_glom(.,"Family") %>% aggregate_taxa(level = "Family")  
+abs_abund_plots_fam <- plot_composition(x = phy_fam_abs,otu.sort = 'abundance') + 
+  scale_fill_manual(values = fam_cols) +  ylab('Absolute read counts')
+
+
+phy_fam_rel <- phyloseq_qza %>% tax_glom(.,"Family") %>% aggregate_taxa(level = "Family")  %>% microbiome::transform(transform = 'compositional')
+
+rel_abund_plots_fam <- plot_composition(x = phy_fam_rel,otu.sort = 'abundance') + 
+  scale_fill_manual(values = fam_cols) +  ylab('Relative abundance')
+
+
+phy_gen_abs <- phyloseq_qza %>% tax_glom(.,"Genus") %>% aggregate_taxa(level = "Genus")  
+abs_abund_plots_gen <- plot_composition(x = phy_gen_abs,otu.sort = 'abundance') + 
+  scale_fill_manual(values = fam_cols) +  ylab('Absolute read counts')
+
+
+phy_gen_rel <- phyloseq_qza %>% tax_glom(.,"Genus") %>% aggregate_taxa(level = "Genus")  %>% microbiome::transform(transform = 'compositional')
+rel_abund_plots_gen <- plot_composition(x = phy_gen_rel,otu.sort = 'abundance') + 
+  scale_fill_manual(values = fam_cols) + ylab('Relative abundance')
 
 
 
-phy_fam <- phyloseq_qza %>% aggregate_taxa(level = "Class")  %>% microbiome::transform(transform = 'compositional')
-rel_abund_plots <- plot_composition(x = phy_fam,otu.sort = 'abundance') + 
-  scale_fill_manual(values = fam_cols)
+otu_plots_gen <- ggarrange(abs_abund_plots_gen, rel_abund_plots_gen, ncol = 2, align ='h', common.legend = T, legend="right")
 
-plot(rel_abund_plots)
+pdf(file = "./out/16S-plots-stacked-Genus.pdf",   
+    width = 7, 
+    height = 10) 
+  
+plot(otu_plots_gen)
+# 
+# stacked_fam_gen_plots <- ggarrange(otu_plots_fam, otu_plots_gen, nrow=2, aligh = 'v')
+
+# plot(stacked_fam_gen_plots)
+
+```
+
+```{r}
+
+
+otu_plots_fam <- ggarrange(abs_abund_plots_fam, rel_abund_plots_fam, ncol = 2, align ='h', common.legend = T, legend="right")
+
+
+
+pdf(file = "./out/16S-plots-stacked-Family.pdf",   
+    width = 7, 
+    height = 10) 
+
+plot(otu_plots_fam)
 ```
