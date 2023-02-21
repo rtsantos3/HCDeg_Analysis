@@ -612,7 +612,7 @@ abs_count_otu_qza <-  '../dada2/filtered_table.qza'
 
 taxa_vsearch_qza <- '../taxonomy_vsearch/classification.qza'
 
-fam_cols <- distinctColorPalette(20)
+fam_cols <- c("#353A46", "#c7ac92", "#92dce5", "#a06b9a", "#94da1b", "#662e00", "#4a205a", "#008dd5", "#ecb309", "#ff5c6c", "#147b1e", "#341b74", "#f45d01", "#c11f96", "#848fa5", "#bf2231", "#fdfd9b", "#2bb6a8", "#af6e77", "#e08115")
 
 #Try generating Phyloseq object
 phyloseq_qza <- qza_to_phyloseq(features = abs_count_otu_qza, taxonomy = taxa_vsearch_qza, metadata = '../read-files/metadata.tsv')
@@ -648,7 +648,7 @@ otu_plots_gen <- ggarrange(abs_abund_plots_gen, rel_abund_plots_gen, ncol = 2, a
 
 pdf(file = "./out/16S-plots-stacked-Genus.pdf",   
     width = 7, 
-    height = 10) 
+    height = 12) 
   
 plot(otu_plots_gen)
 # 
@@ -667,7 +667,7 @@ otu_plots_fam <- ggarrange(abs_abund_plots_fam, rel_abund_plots_fam, ncol = 2, a
 
 pdf(file = "./out/16S-plots-stacked-Family.pdf",   
     width = 7, 
-    height = 10) 
+    height = 12) 
 
 plot(otu_plots_fam)
 ```
