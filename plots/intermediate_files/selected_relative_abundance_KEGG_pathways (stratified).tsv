@@ -1,144 +1,144 @@
 "sample"	"description"	"taxon"	"taxon_rel_function_abun"
-"1"	"HC-DS"	"Aminobenzoate degradation"	"Clostridiaceae"	0.174326043065648
-"2"	"HC-DS"	"Aminobenzoate degradation"	"Desulfitobacteriaceae"	0.027275503336802
-"3"	"HC-DS"	"Aminobenzoate degradation"	"Enterobacteriaceae"	24.2328023504369
-"4"	"HC-DS"	"Aminobenzoate degradation"	"Lachnospiraceae"	0.137563408133436
-"5"	"HC-DS"	"Aminobenzoate degradation"	"Pseudomonadaceae"	0.037503817088103
-"6"	"HC-DS"	"Aminobenzoate degradation"	"Sporomusaceae"	0.103765501824791
-"7"	"HC-DS"	"Aminobenzoate degradation"	"Yersiniaceae"	0.007826883566213
-"8"	"HC-DS"	"Benzoate degradation"	"Clostridiaceae"	0.229376372454802
-"9"	"HC-DS"	"Benzoate degradation"	"Desulfitobacteriaceae"	0.064599876324005
-"10"	"HC-DS"	"Benzoate degradation"	"Enterobacteriaceae"	22.3421949071892
-"11"	"HC-DS"	"Benzoate degradation"	"Lachnospiraceae"	0.325808071894982
-"12"	"HC-DS"	"Benzoate degradation"	"Pseudomonadaceae"	0.045056073160764
-"13"	"HC-DS"	"Benzoate degradation"	"Sporomusaceae"	0.327680532078286
-"14"	"HC-DS"	"Benzoate degradation"	"Yersiniaceae"	0.01647764961308
-"15"	"HC-DS"	"Caprolactam degradation"	"Enterobacteriaceae"	38.7659444164207
-"16"	"HC-DS"	"Caprolactam degradation"	"Pseudomonadaceae"	0.055906311187234
-"17"	"HC-DS"	"Caprolactam degradation"	"Yersiniaceae"	0.033543786712341
-"18"	"HC-DS"	"Chloroalkane and chloroalkene degradation"	"Clostridiaceae"	0.536331311457141
-"19"	"HC-DS"	"Chloroalkane and chloroalkene degradation"	"Desulfitobacteriaceae"	0.094405256353425
-"20"	"HC-DS"	"Chloroalkane and chloroalkene degradation"	"Enterobacteriaceae"	27.8310800306261
-"21"	"HC-DS"	"Chloroalkane and chloroalkene degradation"	"Lachnospiraceae"	4.32075071832054
-"22"	"HC-DS"	"Chloroalkane and chloroalkene degradation"	"Pseudomonadaceae"	0.037625283329264
-"23"	"HC-DS"	"Chloroalkane and chloroalkene degradation"	"Sporomusaceae"	2.87320345423468
-"24"	"HC-DS"	"Chloroalkane and chloroalkene degradation"	"Yersiniaceae"	0.018060135998047
-"25"	"HC-DS"	"Chlorocyclohexane and chlorobenzene degradation"	"Enterobacteriaceae"	9.22504958508623
-"26"	"HC-DS"	"Chlorocyclohexane and chlorobenzene degradation"	"Lachnospiraceae"	0.41269022440031
-"27"	"HC-DS"	"Chlorocyclohexane and chlorobenzene degradation"	"Pseudomonadaceae"	0.024459011144415
-"28"	"HC-DS"	"Chlorocyclohexane and chlorobenzene degradation"	"Yersiniaceae"	0.007826883566213
-"29"	"HC-DS"	"Nitrotoluene degradation"	"Clostridiaceae"	0.633912883875084
-"30"	"HC-DS"	"Nitrotoluene degradation"	"Enterobacteriaceae"	40.1693776414722
-"31"	"HC-DS"	"Nitrotoluene degradation"	"Lachnospiraceae"	0.375172931273011
-"32"	"HC-DS"	"Nitrotoluene degradation"	"Pseudomonadaceae"	0.008894185870696
-"33"	"HC-DS"	"Nitrotoluene degradation"	"Sporomusaceae"	0.848990469475558
-"34"	"HC-DS"	"Nitrotoluene degradation"	"Yersiniaceae"	0.014230697393114
-"35"	"HC-HD"	"Aminobenzoate degradation"	"Bacteroidaceae"	0.019251909308106
-"36"	"HC-HD"	"Aminobenzoate degradation"	"Enterobacteriaceae"	25.1379623907534
-"37"	"HC-HD"	"Aminobenzoate degradation"	"Lachnospiraceae"	0.159790847257277
-"38"	"HC-HD"	"Aminobenzoate degradation"	"Pseudomonadaceae"	0.878207929604754
-"39"	"HC-HD"	"Aminobenzoate degradation"	"Rhizobiaceae"	0.025669212410808
-"40"	"HC-HD"	"Benzoate degradation"	"Bacteroidaceae"	0.010132583846371
-"41"	"HC-HD"	"Benzoate degradation"	"Enterobacteriaceae"	23.2470959254753
-"42"	"HC-HD"	"Benzoate degradation"	"Lachnospiraceae"	0.378452006661971
-"43"	"HC-HD"	"Benzoate degradation"	"Pseudomonadaceae"	1.05505529300342
-"44"	"HC-HD"	"Benzoate degradation"	"Rhizobiaceae"	0.043063481347078
-"45"	"HC-HD"	"Caprolactam degradation"	"Enterobacteriaceae"	40.1880031452119
-"46"	"HC-HD"	"Caprolactam degradation"	"Pseudomonadaceae"	1.30912983295119
-"47"	"HC-HD"	"Caprolactam degradation"	"Rhizobiaceae"	0.06875681895752
-"48"	"HC-HD"	"Chloroalkane and chloroalkene degradation"	"Bacteroidaceae"	0.044316887687059
-"49"	"HC-HD"	"Chloroalkane and chloroalkene degradation"	"Enterobacteriaceae"	28.7791948241296
-"50"	"HC-HD"	"Chloroalkane and chloroalkene degradation"	"Lachnospiraceae"	5.51745251703886
-"51"	"HC-HD"	"Chloroalkane and chloroalkene degradation"	"Pseudomonadaceae"	0.878951605793343
-"52"	"HC-HD"	"Chloroalkane and chloroalkene degradation"	"Rhizobiaceae"	0.088633775374118
-"53"	"HC-HD"	"Chlorocyclohexane and chlorobenzene degradation"	"Enterobacteriaceae"	9.5803083770833
-"54"	"HC-HD"	"Chlorocyclohexane and chlorobenzene degradation"	"Lachnospiraceae"	0.47937254177183
-"55"	"HC-HD"	"Chlorocyclohexane and chlorobenzene degradation"	"Pseudomonadaceae"	0.572744301916145
-"56"	"HC-HD"	"Chlorocyclohexane and chlorobenzene degradation"	"Rhizobiaceae"	0.019251909308106
-"57"	"HC-HD"	"Nitrotoluene degradation"	"Enterobacteriaceae"	41.5485255750239
-"58"	"HC-HD"	"Nitrotoluene degradation"	"Lachnospiraceae"	0.435793219792573
-"59"	"HC-HD"	"Nitrotoluene degradation"	"Pseudomonadaceae"	0.208270655242234
-"60"	"HC-HD"	"Nitrotoluene degradation"	"Rhizobiaceae"	0.008750867867321
-"61"	"HC-HX"	"Aminobenzoate degradation"	"Clostridiaceae"	0.034275026073502
-"62"	"HC-HX"	"Aminobenzoate degradation"	"Comamonadaceae"	0.195857291848583
-"63"	"HC-HX"	"Aminobenzoate degradation"	"Desulfitobacteriaceae"	0.036995266238066
-"64"	"HC-HX"	"Aminobenzoate degradation"	"Enterobacteriaceae"	25.7221339957662
-"65"	"HC-HX"	"Aminobenzoate degradation"	"Lactobacillaceae"	0.005440480329127
-"66"	"HC-HX"	"Aminobenzoate degradation"	"Moraxellaceae"	1.01600970146452
-"67"	"HC-HX"	"Aminobenzoate degradation"	"Streptococcaceae"	0.005875718755458
-"68"	"HC-HX"	"Aminobenzoate degradation"	"Xanthomonadaceae"	0.203473964309361
-"69"	"HC-HX"	"Benzoate degradation"	"Clostridiaceae"	0.045098718517766
-"70"	"HC-HX"	"Benzoate degradation"	"Comamonadaceae"	0.399445792585925
-"71"	"HC-HX"	"Benzoate degradation"	"Desulfitobacteriaceae"	0.087620367405945
-"72"	"HC-HX"	"Benzoate degradation"	"Enterobacteriaceae"	23.9876819507799
-"73"	"HC-HX"	"Benzoate degradation"	"Lactobacillaceae"	0.006442674073967
-"74"	"HC-HX"	"Benzoate degradation"	"Moraxellaceae"	1.6492171850342
-"75"	"HC-HX"	"Benzoate degradation"	"Prevotellaceae"	0.002233460345642
-"76"	"HC-HX"	"Benzoate degradation"	"Streptococcaceae"	0.003092483555504
-"77"	"HC-HX"	"Benzoate degradation"	"Xanthomonadaceae"	0.118974714565916
-"78"	"HC-HX"	"Caprolactam degradation"	"Comamonadaceae"	0.419486877668835
-"79"	"HC-HX"	"Caprolactam degradation"	"Enterobacteriaceae"	41.003863489414
-"80"	"HC-HX"	"Caprolactam degradation"	"Moraxellaceae"	2.07646004446073
-"81"	"HC-HX"	"Caprolactam degradation"	"Xanthomonadaceae"	0.139828959222945
-"82"	"HC-HX"	"Chlorocyclohexane and chlorobenzene degradation"	"Comamonadaceae"	0.244821614810728
-"83"	"HC-HX"	"Chlorocyclohexane and chlorobenzene degradation"	"Enterobacteriaceae"	9.93463262884554
-"84"	"HC-HX"	"Chlorocyclohexane and chlorobenzene degradation"	"Lactobacillaceae"	0.004080360246846
-"85"	"HC-HX"	"Chlorocyclohexane and chlorobenzene degradation"	"Moraxellaceae"	0.517797715324691
-"86"	"HC-HX"	"Chlorocyclohexane and chlorobenzene degradation"	"Xanthomonadaceae"	0.195857291848583
-"87"	"HC-HX"	"Nitrotoluene degradation"	"Clostridiaceae"	0.124636458449098
-"88"	"HC-HX"	"Nitrotoluene degradation"	"Comamonadaceae"	0.178052083498712
-"89"	"HC-HX"	"Nitrotoluene degradation"	"Enterobacteriaceae"	42.2356753760349
-"90"	"HC-HX"	"Nitrotoluene degradation"	"Moraxellaceae"	0.38763422345032
-"91"	"HC-HX"	"Nitrotoluene degradation"	"Xanthomonadaceae"	0.089026041749356
-"92"	"HC-XY"	"Aminobenzoate degradation"	"Alcaligenaceae"	0.436676137686898
-"93"	"HC-XY"	"Aminobenzoate degradation"	"Clostridiaceae"	0.283354293787942
-"94"	"HC-XY"	"Aminobenzoate degradation"	"Enterobacteriaceae"	24.1455638879832
-"95"	"HC-XY"	"Aminobenzoate degradation"	"Lachnospiraceae"	0.09380450365126
-"96"	"HC-XY"	"Aminobenzoate degradation"	"Moraxellaceae"	0.503633145465555
-"97"	"HC-XY"	"Aminobenzoate degradation"	"Pseudomonadaceae"	0.297586701238478
-"98"	"HC-XY"	"Aminobenzoate degradation"	"Sporomusaceae"	0.021995538787192
-"99"	"HC-XY"	"Aminobenzoate degradation"	"Xanthomonadaceae"	0.152027988676179
-"100"	"HC-XY"	"Aminobenzoate degradation"	"Yersiniaceae"	0.031440681913457
-"101"	"HC-XY"	"Benzoate degradation"	"Alcaligenaceae"	0.850369320758695
-"102"	"HC-XY"	"Benzoate degradation"	"Clostridiaceae"	0.372834597089397
-"103"	"HC-XY"	"Benzoate degradation"	"Enterobacteriaceae"	22.2847222392466
-"104"	"HC-XY"	"Benzoate degradation"	"Lachnospiraceae"	0.222168561279298
-"105"	"HC-XY"	"Benzoate degradation"	"Moraxellaceae"	0.925191606338965
-"106"	"HC-XY"	"Benzoate degradation"	"Pseudomonadaceae"	0.357512627345998
-"107"	"HC-XY"	"Benzoate degradation"	"Sporomusaceae"	0.06945959617008
-"108"	"HC-XY"	"Benzoate degradation"	"Xanthomonadaceae"	0.120022096323299
-"109"	"HC-XY"	"Benzoate degradation"	"Yersiniaceae"	0.066190909291488
-"110"	"HC-XY"	"Caprolactam degradation"	"Alcaligenaceae"	1.12288149690917
-"111"	"HC-XY"	"Caprolactam degradation"	"Enterobacteriaceae"	38.6342766646926
-"112"	"HC-XY"	"Caprolactam degradation"	"Moraxellaceae"	1.28507549090716
-"113"	"HC-XY"	"Caprolactam degradation"	"Pseudomonadaceae"	0.443607504951769
-"114"	"HC-XY"	"Caprolactam degradation"	"Xanthomonadaceae"	0.130309704579582
-"115"	"HC-XY"	"Caprolactam degradation"	"Yersiniaceae"	0.1347457796291
-"116"	"HC-XY"	"Chloroalkane and chloroalkene degradation"	"Alcaligenaceae"	0.603567708433022
-"117"	"HC-XY"	"Chloroalkane and chloroalkene degradation"	"Clostridiaceae"	0.870329732654037
-"118"	"HC-XY"	"Chloroalkane and chloroalkene degradation"	"Enterobacteriaceae"	27.6874838433076
-"119"	"HC-XY"	"Chloroalkane and chloroalkene degradation"	"Lachnospiraceae"	3.24138213788104
-"120"	"HC-XY"	"Chloroalkane and chloroalkene degradation"	"Moraxellaceae"	0.31594161527852
-"121"	"HC-XY"	"Chloroalkane and chloroalkene degradation"	"Pseudomonadaceae"	0.298058127621246
-"122"	"HC-XY"	"Chloroalkane and chloroalkene degradation"	"Sporomusaceae"	0.60803858034734
-"123"	"HC-XY"	"Chloroalkane and chloroalkene degradation"	"Xanthomonadaceae"	0.280174639963971
-"124"	"HC-XY"	"Chloroalkane and chloroalkene degradation"	"Yersiniaceae"	0.072428125011963
-"125"	"HC-XY"	"Chlorocyclohexane and chlorobenzene degradation"	"Alcaligenaceae"	0.524011365224277
-"126"	"HC-XY"	"Chlorocyclohexane and chlorobenzene degradation"	"Enterobacteriaceae"	9.20097970717469
-"127"	"HC-XY"	"Chlorocyclohexane and chlorobenzene degradation"	"Lachnospiraceae"	0.281413510953778
-"128"	"HC-XY"	"Chlorocyclohexane and chlorobenzene degradation"	"Moraxellaceae"	0.305673296380828
-"129"	"HC-XY"	"Chlorocyclohexane and chlorobenzene degradation"	"Pseudomonadaceae"	0.194078283416399
-"130"	"HC-XY"	"Chlorocyclohexane and chlorobenzene degradation"	"Xanthomonadaceae"	0.182433586411415
-"131"	"HC-XY"	"Chlorocyclohexane and chlorobenzene degradation"	"Yersiniaceae"	0.031440681913457
-"132"	"HC-XY"	"Nitrotoluene degradation"	"Clostridiaceae"	1.03037925013797
-"133"	"HC-XY"	"Nitrotoluene degradation"	"Enterobacteriaceae"	39.9685522606944
-"134"	"HC-XY"	"Nitrotoluene degradation"	"Lachnospiraceae"	0.255830464503434
-"135"	"HC-XY"	"Nitrotoluene degradation"	"Moraxellaceae"	0.096156967692671
-"136"	"HC-XY"	"Nitrotoluene degradation"	"Pseudomonadaceae"	0.070573921242327
-"137"	"HC-XY"	"Nitrotoluene degradation"	"Sporomusaceae"	0.179963499167933
-"138"	"HC-XY"	"Nitrotoluene degradation"	"Xanthomonadaceae"	0.082924357459734
-"139"	"HC-XY"	"Nitrotoluene degradation"	"Yersiniaceae"	0.057164876206285
-"140"	"HC-XY"	"Polycyclic aromatic hydrocarbon degradation"	"Alcaligenaceae"	0.154120989771846
-"141"	"HC-XY"	"Polycyclic aromatic hydrocarbon degradation"	"Enterobacteriaceae"	0.328791444846605
-"142"	"HC-XY"	"Polycyclic aromatic hydrocarbon degradation"	"Moraxellaceae"	0.117588607011112
-"143"	"HC-XY"	"Polycyclic aromatic hydrocarbon degradation"	"Pseudomonadaceae"	0.045665478450917
+"1"	"A5"	"Aminobenzoate degradation"	"Bacteroidaceae"	0.019251909308106
+"2"	"A5"	"Aminobenzoate degradation"	"Enterobacteriaceae"	25.1379623907534
+"3"	"A5"	"Aminobenzoate degradation"	"Lachnospiraceae"	0.159790847257277
+"4"	"A5"	"Aminobenzoate degradation"	"Pseudomonadaceae"	0.878207929604754
+"5"	"A5"	"Aminobenzoate degradation"	"Rhizobiaceae"	0.025669212410808
+"6"	"A5"	"Benzoate degradation"	"Bacteroidaceae"	0.010132583846371
+"7"	"A5"	"Benzoate degradation"	"Enterobacteriaceae"	23.2470959254753
+"8"	"A5"	"Benzoate degradation"	"Lachnospiraceae"	0.378452006661971
+"9"	"A5"	"Benzoate degradation"	"Pseudomonadaceae"	1.05505529300342
+"10"	"A5"	"Benzoate degradation"	"Rhizobiaceae"	0.043063481347078
+"11"	"A5"	"Caprolactam degradation"	"Enterobacteriaceae"	40.1880031452119
+"12"	"A5"	"Caprolactam degradation"	"Pseudomonadaceae"	1.30912983295119
+"13"	"A5"	"Caprolactam degradation"	"Rhizobiaceae"	0.06875681895752
+"14"	"A5"	"Chloroalkane and chloroalkene degradation"	"Bacteroidaceae"	0.044316887687059
+"15"	"A5"	"Chloroalkane and chloroalkene degradation"	"Enterobacteriaceae"	28.7791948241296
+"16"	"A5"	"Chloroalkane and chloroalkene degradation"	"Lachnospiraceae"	5.51745251703886
+"17"	"A5"	"Chloroalkane and chloroalkene degradation"	"Pseudomonadaceae"	0.878951605793343
+"18"	"A5"	"Chloroalkane and chloroalkene degradation"	"Rhizobiaceae"	0.088633775374118
+"19"	"A5"	"Chlorocyclohexane and chlorobenzene degradation"	"Enterobacteriaceae"	9.5803083770833
+"20"	"A5"	"Chlorocyclohexane and chlorobenzene degradation"	"Lachnospiraceae"	0.47937254177183
+"21"	"A5"	"Chlorocyclohexane and chlorobenzene degradation"	"Pseudomonadaceae"	0.572744301916145
+"22"	"A5"	"Chlorocyclohexane and chlorobenzene degradation"	"Rhizobiaceae"	0.019251909308106
+"23"	"A5"	"Nitrotoluene degradation"	"Enterobacteriaceae"	41.5485255750239
+"24"	"A5"	"Nitrotoluene degradation"	"Lachnospiraceae"	0.435793219792573
+"25"	"A5"	"Nitrotoluene degradation"	"Pseudomonadaceae"	0.208270655242234
+"26"	"A5"	"Nitrotoluene degradation"	"Rhizobiaceae"	0.008750867867321
+"27"	"B1"	"Aminobenzoate degradation"	"Clostridiaceae"	0.034275026073502
+"28"	"B1"	"Aminobenzoate degradation"	"Comamonadaceae"	0.195857291848583
+"29"	"B1"	"Aminobenzoate degradation"	"Desulfitobacteriaceae"	0.036995266238066
+"30"	"B1"	"Aminobenzoate degradation"	"Enterobacteriaceae"	25.7221339957662
+"31"	"B1"	"Aminobenzoate degradation"	"Lactobacillaceae"	0.005440480329127
+"32"	"B1"	"Aminobenzoate degradation"	"Moraxellaceae"	1.01600970146452
+"33"	"B1"	"Aminobenzoate degradation"	"Streptococcaceae"	0.005875718755458
+"34"	"B1"	"Aminobenzoate degradation"	"Xanthomonadaceae"	0.203473964309361
+"35"	"B1"	"Benzoate degradation"	"Clostridiaceae"	0.045098718517766
+"36"	"B1"	"Benzoate degradation"	"Comamonadaceae"	0.399445792585925
+"37"	"B1"	"Benzoate degradation"	"Desulfitobacteriaceae"	0.087620367405945
+"38"	"B1"	"Benzoate degradation"	"Enterobacteriaceae"	23.9876819507799
+"39"	"B1"	"Benzoate degradation"	"Lactobacillaceae"	0.006442674073967
+"40"	"B1"	"Benzoate degradation"	"Moraxellaceae"	1.6492171850342
+"41"	"B1"	"Benzoate degradation"	"Prevotellaceae"	0.002233460345642
+"42"	"B1"	"Benzoate degradation"	"Streptococcaceae"	0.003092483555504
+"43"	"B1"	"Benzoate degradation"	"Xanthomonadaceae"	0.118974714565916
+"44"	"B1"	"Caprolactam degradation"	"Comamonadaceae"	0.419486877668835
+"45"	"B1"	"Caprolactam degradation"	"Enterobacteriaceae"	41.003863489414
+"46"	"B1"	"Caprolactam degradation"	"Moraxellaceae"	2.07646004446073
+"47"	"B1"	"Caprolactam degradation"	"Xanthomonadaceae"	0.139828959222945
+"48"	"B1"	"Chlorocyclohexane and chlorobenzene degradation"	"Comamonadaceae"	0.244821614810728
+"49"	"B1"	"Chlorocyclohexane and chlorobenzene degradation"	"Enterobacteriaceae"	9.93463262884554
+"50"	"B1"	"Chlorocyclohexane and chlorobenzene degradation"	"Lactobacillaceae"	0.004080360246846
+"51"	"B1"	"Chlorocyclohexane and chlorobenzene degradation"	"Moraxellaceae"	0.517797715324691
+"52"	"B1"	"Chlorocyclohexane and chlorobenzene degradation"	"Xanthomonadaceae"	0.195857291848583
+"53"	"B1"	"Nitrotoluene degradation"	"Clostridiaceae"	0.124636458449098
+"54"	"B1"	"Nitrotoluene degradation"	"Comamonadaceae"	0.178052083498712
+"55"	"B1"	"Nitrotoluene degradation"	"Enterobacteriaceae"	42.2356753760349
+"56"	"B1"	"Nitrotoluene degradation"	"Moraxellaceae"	0.38763422345032
+"57"	"B1"	"Nitrotoluene degradation"	"Xanthomonadaceae"	0.089026041749356
+"58"	"B2"	"Aminobenzoate degradation"	"Clostridiaceae"	0.174326043065648
+"59"	"B2"	"Aminobenzoate degradation"	"Desulfitobacteriaceae"	0.027275503336802
+"60"	"B2"	"Aminobenzoate degradation"	"Enterobacteriaceae"	24.2328023504369
+"61"	"B2"	"Aminobenzoate degradation"	"Lachnospiraceae"	0.137563408133436
+"62"	"B2"	"Aminobenzoate degradation"	"Pseudomonadaceae"	0.037503817088103
+"63"	"B2"	"Aminobenzoate degradation"	"Sporomusaceae"	0.103765501824791
+"64"	"B2"	"Aminobenzoate degradation"	"Yersiniaceae"	0.007826883566213
+"65"	"B2"	"Benzoate degradation"	"Clostridiaceae"	0.229376372454802
+"66"	"B2"	"Benzoate degradation"	"Desulfitobacteriaceae"	0.064599876324005
+"67"	"B2"	"Benzoate degradation"	"Enterobacteriaceae"	22.3421949071892
+"68"	"B2"	"Benzoate degradation"	"Lachnospiraceae"	0.325808071894982
+"69"	"B2"	"Benzoate degradation"	"Pseudomonadaceae"	0.045056073160764
+"70"	"B2"	"Benzoate degradation"	"Sporomusaceae"	0.327680532078286
+"71"	"B2"	"Benzoate degradation"	"Yersiniaceae"	0.01647764961308
+"72"	"B2"	"Caprolactam degradation"	"Enterobacteriaceae"	38.7659444164207
+"73"	"B2"	"Caprolactam degradation"	"Pseudomonadaceae"	0.055906311187234
+"74"	"B2"	"Caprolactam degradation"	"Yersiniaceae"	0.033543786712341
+"75"	"B2"	"Chloroalkane and chloroalkene degradation"	"Clostridiaceae"	0.536331311457141
+"76"	"B2"	"Chloroalkane and chloroalkene degradation"	"Desulfitobacteriaceae"	0.094405256353425
+"77"	"B2"	"Chloroalkane and chloroalkene degradation"	"Enterobacteriaceae"	27.8310800306261
+"78"	"B2"	"Chloroalkane and chloroalkene degradation"	"Lachnospiraceae"	4.32075071832054
+"79"	"B2"	"Chloroalkane and chloroalkene degradation"	"Pseudomonadaceae"	0.037625283329264
+"80"	"B2"	"Chloroalkane and chloroalkene degradation"	"Sporomusaceae"	2.87320345423468
+"81"	"B2"	"Chloroalkane and chloroalkene degradation"	"Yersiniaceae"	0.018060135998047
+"82"	"B2"	"Chlorocyclohexane and chlorobenzene degradation"	"Enterobacteriaceae"	9.22504958508623
+"83"	"B2"	"Chlorocyclohexane and chlorobenzene degradation"	"Lachnospiraceae"	0.41269022440031
+"84"	"B2"	"Chlorocyclohexane and chlorobenzene degradation"	"Pseudomonadaceae"	0.024459011144415
+"85"	"B2"	"Chlorocyclohexane and chlorobenzene degradation"	"Yersiniaceae"	0.007826883566213
+"86"	"B2"	"Nitrotoluene degradation"	"Clostridiaceae"	0.633912883875084
+"87"	"B2"	"Nitrotoluene degradation"	"Enterobacteriaceae"	40.1693776414722
+"88"	"B2"	"Nitrotoluene degradation"	"Lachnospiraceae"	0.375172931273011
+"89"	"B2"	"Nitrotoluene degradation"	"Pseudomonadaceae"	0.008894185870696
+"90"	"B2"	"Nitrotoluene degradation"	"Sporomusaceae"	0.848990469475558
+"91"	"B2"	"Nitrotoluene degradation"	"Yersiniaceae"	0.014230697393114
+"92"	"B7"	"Aminobenzoate degradation"	"Alcaligenaceae"	0.436676137686898
+"93"	"B7"	"Aminobenzoate degradation"	"Clostridiaceae"	0.283354293787942
+"94"	"B7"	"Aminobenzoate degradation"	"Enterobacteriaceae"	24.1455638879832
+"95"	"B7"	"Aminobenzoate degradation"	"Lachnospiraceae"	0.09380450365126
+"96"	"B7"	"Aminobenzoate degradation"	"Moraxellaceae"	0.503633145465555
+"97"	"B7"	"Aminobenzoate degradation"	"Pseudomonadaceae"	0.297586701238478
+"98"	"B7"	"Aminobenzoate degradation"	"Sporomusaceae"	0.021995538787192
+"99"	"B7"	"Aminobenzoate degradation"	"Xanthomonadaceae"	0.152027988676179
+"100"	"B7"	"Aminobenzoate degradation"	"Yersiniaceae"	0.031440681913457
+"101"	"B7"	"Benzoate degradation"	"Alcaligenaceae"	0.850369320758695
+"102"	"B7"	"Benzoate degradation"	"Clostridiaceae"	0.372834597089397
+"103"	"B7"	"Benzoate degradation"	"Enterobacteriaceae"	22.2847222392466
+"104"	"B7"	"Benzoate degradation"	"Lachnospiraceae"	0.222168561279298
+"105"	"B7"	"Benzoate degradation"	"Moraxellaceae"	0.925191606338965
+"106"	"B7"	"Benzoate degradation"	"Pseudomonadaceae"	0.357512627345998
+"107"	"B7"	"Benzoate degradation"	"Sporomusaceae"	0.06945959617008
+"108"	"B7"	"Benzoate degradation"	"Xanthomonadaceae"	0.120022096323299
+"109"	"B7"	"Benzoate degradation"	"Yersiniaceae"	0.066190909291488
+"110"	"B7"	"Caprolactam degradation"	"Alcaligenaceae"	1.12288149690917
+"111"	"B7"	"Caprolactam degradation"	"Enterobacteriaceae"	38.6342766646926
+"112"	"B7"	"Caprolactam degradation"	"Moraxellaceae"	1.28507549090716
+"113"	"B7"	"Caprolactam degradation"	"Pseudomonadaceae"	0.443607504951769
+"114"	"B7"	"Caprolactam degradation"	"Xanthomonadaceae"	0.130309704579582
+"115"	"B7"	"Caprolactam degradation"	"Yersiniaceae"	0.1347457796291
+"116"	"B7"	"Chloroalkane and chloroalkene degradation"	"Alcaligenaceae"	0.603567708433022
+"117"	"B7"	"Chloroalkane and chloroalkene degradation"	"Clostridiaceae"	0.870329732654037
+"118"	"B7"	"Chloroalkane and chloroalkene degradation"	"Enterobacteriaceae"	27.6874838433076
+"119"	"B7"	"Chloroalkane and chloroalkene degradation"	"Lachnospiraceae"	3.24138213788104
+"120"	"B7"	"Chloroalkane and chloroalkene degradation"	"Moraxellaceae"	0.31594161527852
+"121"	"B7"	"Chloroalkane and chloroalkene degradation"	"Pseudomonadaceae"	0.298058127621246
+"122"	"B7"	"Chloroalkane and chloroalkene degradation"	"Sporomusaceae"	0.60803858034734
+"123"	"B7"	"Chloroalkane and chloroalkene degradation"	"Xanthomonadaceae"	0.280174639963971
+"124"	"B7"	"Chloroalkane and chloroalkene degradation"	"Yersiniaceae"	0.072428125011963
+"125"	"B7"	"Chlorocyclohexane and chlorobenzene degradation"	"Alcaligenaceae"	0.524011365224277
+"126"	"B7"	"Chlorocyclohexane and chlorobenzene degradation"	"Enterobacteriaceae"	9.20097970717469
+"127"	"B7"	"Chlorocyclohexane and chlorobenzene degradation"	"Lachnospiraceae"	0.281413510953778
+"128"	"B7"	"Chlorocyclohexane and chlorobenzene degradation"	"Moraxellaceae"	0.305673296380828
+"129"	"B7"	"Chlorocyclohexane and chlorobenzene degradation"	"Pseudomonadaceae"	0.194078283416399
+"130"	"B7"	"Chlorocyclohexane and chlorobenzene degradation"	"Xanthomonadaceae"	0.182433586411415
+"131"	"B7"	"Chlorocyclohexane and chlorobenzene degradation"	"Yersiniaceae"	0.031440681913457
+"132"	"B7"	"Nitrotoluene degradation"	"Clostridiaceae"	1.03037925013797
+"133"	"B7"	"Nitrotoluene degradation"	"Enterobacteriaceae"	39.9685522606944
+"134"	"B7"	"Nitrotoluene degradation"	"Lachnospiraceae"	0.255830464503434
+"135"	"B7"	"Nitrotoluene degradation"	"Moraxellaceae"	0.096156967692671
+"136"	"B7"	"Nitrotoluene degradation"	"Pseudomonadaceae"	0.070573921242327
+"137"	"B7"	"Nitrotoluene degradation"	"Sporomusaceae"	0.179963499167933
+"138"	"B7"	"Nitrotoluene degradation"	"Xanthomonadaceae"	0.082924357459734
+"139"	"B7"	"Nitrotoluene degradation"	"Yersiniaceae"	0.057164876206285
+"140"	"B7"	"Polycyclic aromatic hydrocarbon degradation"	"Alcaligenaceae"	0.154120989771846
+"141"	"B7"	"Polycyclic aromatic hydrocarbon degradation"	"Enterobacteriaceae"	0.328791444846605
+"142"	"B7"	"Polycyclic aromatic hydrocarbon degradation"	"Moraxellaceae"	0.117588607011112
+"143"	"B7"	"Polycyclic aromatic hydrocarbon degradation"	"Pseudomonadaceae"	0.045665478450917

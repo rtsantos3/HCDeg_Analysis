@@ -56,11 +56,21 @@ pth_2_ko[,1] <- NULL
 #Retrieve Sample ids so I can call it as a variable 
 sample_ids <- c('HC.DS','HC.XY','HC.HX','HC.HD')
 
+cons_codes <- c('HC-DS'='B2',
+                'HC-XY'='B7',
+                'HC-HX'='B1',
+                'HC-HD'='A5')
+
+strat_kegg <- strat_kegg %>% mutate(sample=recode(sample, !!!cons_codes))
+
 
 ```
 
-
 ```{r}
+
+
+samps <- c('HC-DS','HC-XY','HC-HX','HC-HD')
+
 
 #This code block is to load the required files to plot NSTI vs relative abundance
 abs_count_otu <-  read_qza(file = '../dada2/table.qza')$data
@@ -70,7 +80,6 @@ nsti_asvs <- as.data.frame(read.csv('../picrust2-strat/out/marker_predicted_and_
 
 rel_nsti <- merge(nsti_asvs,rel_count_otu,by="row.names",all.x=TRUE)
 
-samps <- c('HC-DS','HC-XY','HC-HX','HC-HD')
 rel_nsti <- melt(rel_nsti, measure.vars = samps, variable.name = 'sample.id', value.name = 'rel.abundance')
 
 
@@ -262,7 +271,7 @@ unstr_keg_filtered <- subset(unstrat_kegg_no_desc, unstrat_kegg$pathway %in% row
 
 
 #Plot heatmap based only on degradation
-pdf(file = "./KEGG-pathway-heatmap.pdf",   
+pdf(file = "./out/pathway-heatmaps/KEGG-pathway-heatmap.pdf",   
     width = 8, 
     height = 11) 
 
@@ -317,7 +326,7 @@ c16 <- c("dodgerblue2", "#E31A1C", "green4", "#6A3D9A", "#FF7F00", "black", "gol
 
 #Set Pathways as factor
 
-pdf(file = "./out/Per-gene-heatmap.pdf",   
+pdf(file = "./out/pathway-heatmaps/Per-gene-heatmap.pdf",   
     width = 10, 
     height = 20) 
 
@@ -350,12 +359,17 @@ dev.off()
 
 #Generate Cumulative relative abundances per consortia for specific degradation pathways
 
+#Generate sorting vector for the sample ids
+sort_cols = c('A5', 'B1', 'B2', 'B7')
+cons_codes <- c('HC.DS'='B2',
+                'HC.XY'='B7',
+                'HC.HX'='B1',
+                'HC.HD'='A5')
 
 #Filter then convert to long form so it's easier to plot
-filt_rel_abun <- subset(rel_abun_unstrkeg, rownames(rel_abun_unstrkeg) %in% rownames(deg_kos)) %>% melt(measure.vars = sample_ids, variable.name = 'sample.id', value.name ='rel.abundance') %>% mutate(across(description, factor)) 
+filt_rel_abun <- subset(rel_abun_unstrkeg, rownames(rel_abun_unstrkeg) %in% rownames(deg_kos)) %>% melt(measure.vars = sample_ids, variable.name = 'sample.id', value.name ='rel.abundance') %>% mutate(across(description, factor))  %>% mutate(sample.id = recode(sample.id,!!!cons_codes)) %>% mutate(sample.id=factor(sample.id, levels=sort_cols)) %>%
+  mutate(rel.abundance = rel.abundance * 100) #Convert to percent
 #Convert to percent
-filt_rel_abun$rel.abundance <- filt_rel_abun$rel.abundance*100
-
 
 write.table(filt_rel_abun, file =  './intermediate_files/out-Deg-pathway-relabunds.tsv', sep ='\t', col.names = T)
 
@@ -368,7 +382,7 @@ pdf(file='./out/Deg-pathway-relabunds.pdf', width = 8, height = 5)
 
 
 plot3 <- ggplot(filt_rel_abun, aes(x=sample.id, y=rel.abundance, fill=description)) +   geom_bar(position="stack", stat="identity") +
-labs(title='Degradation pathway relative abundances', y='% relative pathway abundances') +scale_fill_manual(values=colors)
+labs(title='Degradation pathway relative abundances', x='Consortia code',y='% relative pathway abundances') +scale_fill_manual(values=colors) + labs(color='Degradation pathway description')
 
 
 plot(plot3)
@@ -376,6 +390,9 @@ dev.off()
 
 
 plot(plot3)
+
+ggsave(file='./out/pathway-counts/Deg_pathway_relabunds.svg',plot3, device = 'svg', width=8, height=5)
+
 ```
 
 ```{r}
@@ -393,9 +410,13 @@ ko_counts %>% count(pathway_desc)
 
 # 
 # Bôto, M. L., Magalhães, C., Perdigão, R., Alexandrino, D. A., Fernandes, J. P., Bernabeu, A. M., ... & Mucha, A. P. (2021). Harnessing the potential of native microbial communities for bioremediation of oil spills in the Iberian Peninsula NW coast. Frontiers in microbiology, 12, 879.
+cons_codes <- c('HC-DS'='B2',
+                'HC-XY'='B7',
+                'HC-HX'='B1',
+                'HC-HD'='A5')
 
 #Change taxon ids to family
-kegg_strat_relcounts <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Family'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
+kegg_strat_relcounts <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Family'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc)
 
 kegg_strat_relcounts$description <- factor(kegg_strat_relcounts$description)
 kegg_strat_relcounts$taxon <- factor(kegg_strat_relcounts$taxon)
@@ -406,7 +427,6 @@ write.table(kegg_strat_relcounts, file =  './intermediate_files/selected_relativ
 
 
 
-kegg_strat_relcounts
 
 
 ```
@@ -463,27 +483,6 @@ plot(plot5)
 ```
 
 
-```{r}
-fam_cols  <- distinctColorPalette(20)
-
-kegg_strat_relcounts_phylum <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Phylum'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
-
-
-pdf(file = "./out/Per-phylum-relcounts-KEGG.pdf",   
-    width = 14, 
-    height = 7) 
-
-plot6<- ggplot(kegg_strat_relcounts_phylum, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
-geom_bar(position="stack", stat="identity")  +   
-scale_fill_manual(values=fam_cols, drop=T) +
-labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
-
-plot(plot6)
-dev.off()
-
-plot(plot6)
-
-```
 
 ```{r}
 
@@ -499,10 +498,9 @@ geom_bar(position="stack", stat="identity")  +
 scale_fill_manual(values=fam_cols, drop=T) +
 labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
 
-plot(plot7)
-dev.off()
 
 plot(plot7)
+ggsave(file='./out/pathway-counts/Per-class-relcounts-KEGG.svg',plot7, device = 'svg', width=10, height=4)
 
 ```
 
@@ -510,17 +508,20 @@ plot(plot7)
 
 ```{r}
 
+fam_cols  <- distinctColorPalette(20)
+
+
 kegg_strat_relcounts_unfiltered_fam <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Family'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum))  #Summarise based on taxon_rel 
 
 
-pdf(file = "./out/unfiltered-relcounts-KEGG-Family.pdf",   
+pdf(file = "./out/pathway-counts/unfiltered-relcounts-KEGG-Family.pdf",   
     width = 10, 
     height = 20) 
 
 plot8 <- ggplot(kegg_strat_relcounts_unfiltered_fam, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
 geom_bar(position="stack", stat="identity")  +   
 scale_fill_manual(values=fam_cols, drop=T) +
-labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
+labs(y= "Function relative abundance (Per taxon)", x="Pathway Systems (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
 
 plot(plot8)
 dev.off()
@@ -532,6 +533,21 @@ plot(plot8)
 
 
 ```{r}
+#Generate the plot for relative counts
+fam_cols  <- distinctColorPalette(20)
+
+kegg_strat_relcounts_phylum <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Phylum'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc)
+
+
+pdf(file = "./out/Per-phylum-relcounts-KEGG.pdf",   
+    width = 14, 
+    height = 7) 
+
+plot6<- ggplot(kegg_strat_relcounts_phylum, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
+geom_bar(position="stack", stat="identity")  +   
+scale_fill_manual(values=fam_cols, drop=T) +
+labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
+
 
 kegg_strat_relcounts_genus <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = ifelse(is.na(taxa_vsearch[taxon,'Genus'])==TRUE,taxa_vsearch[taxon, 'Family'], taxa_vsearch[taxon,'Genus']), taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
 
@@ -545,23 +561,15 @@ geom_bar(position="stack", stat="identity")  +
 scale_fill_manual(values=fam_cols, drop=T) +
 labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
 
-plot(plot9)
-dev.off()
-
-plot(plot9)
-
-```
-
-
-```{r}
-
 
 
 pdf(file = "./out/Stacked-GenusFam-relcounts-KEGG.pdf",   
-    width = 20, 
-    height = 10) 
+    width = 11, 
+    height = 8) 
 
-ggarrange(plot6, plot9, nrow = 2, align ='v')
+gen_fam_plot <- ggarrange(plot6, plot9, nrow = 2, align ='v')
+
+ggsave('./out/pathway-counts/Stacked-GenusFam-relcounts-KEGG.svg', gen_fam_plot,device='svg', width=15, height=10)
 ```
 
 ```{r}
@@ -601,56 +609,69 @@ pth_2_ko[,1] <- NULL
 #Retrieve Sample ids so I can call it as a variable 
 sample_ids <- c('HC.DS','HC.XY','HC.HX','HC.HD')
 
+#Rename the sample names to 
+
 
 ```
 
 
 ```{r}
 
+
+
 #This code block is to load the required files to plot NSTI vs relative abundance
+order_list = c('A5','B1','B2','B7')
 abs_count_otu_qza <-  '../dada2/filtered_table.qza'
 
 taxa_vsearch_qza <- '../taxonomy_vsearch/classification.qza'
 
-fam_cols <- c("#353A46", "#c7ac92", "#92dce5", "#a06b9a", "#94da1b", "#662e00", "#4a205a", "#008dd5", "#ecb309", "#ff5c6c", "#147b1e", "#341b74", "#f45d01", "#c11f96", "#848fa5", "#bf2231", "#fdfd9b", "#2bb6a8", "#af6e77", "#e08115")
+fam_cols <- c("#341b74","#c7ac92", "#92dce5", "#a06b9a", "#94da1b", "#662e00", "#4a205a", "#008dd5", "#ecb309", "#ff5c6c", "#147b1e", "#353A46", "#f45d01", "#c11f96", "#848fa5", "#bf2231", "#fdfd9b", "#2bb6a8", "#af6e77", "#e08115")
 
 #Try generating Phyloseq object
 phyloseq_qza <- qza_to_phyloseq(features = abs_count_otu_qza, taxonomy = taxa_vsearch_qza, metadata = '../read-files/metadata.tsv')
 
-colors <- fam_cols
 
+sample_names(phyloseq_qza) <- factor(sample_data(phyloseq_qza)$Sample.name, levels=order_list)
 
-
-
-phy_fam_abs <- phyloseq_qza %>% tax_glom(.,"Family") %>% aggregate_taxa(level = "Family")  
-abs_abund_plots_fam <- plot_composition(x = phy_fam_abs,otu.sort = 'abundance') + 
+#Phylum
+phy_phyl_abs <- phyloseq_qza %>% tax_glom(.,"Phylum") %>% aggregate_taxa(level = "Phylum")  
+abund_plot_phyl <- plot_composition(x = phy_phyl_abs,otu.sort = 'abundance') + 
   scale_fill_manual(values = fam_cols) +  ylab('Absolute read counts')
-
-
-phy_fam_rel <- phyloseq_qza %>% tax_glom(.,"Family") %>% aggregate_taxa(level = "Family")  %>% microbiome::transform(transform = 'compositional')
-
-rel_abund_plots_fam <- plot_composition(x = phy_fam_rel,otu.sort = 'abundance') + 
-  scale_fill_manual(values = fam_cols) +  ylab('Relative abundance')
-
-
-phy_gen_abs <- phyloseq_qza %>% tax_glom(.,"Genus") %>% aggregate_taxa(level = "Genus")  
-abs_abund_plots_gen <- plot_composition(x = phy_gen_abs,otu.sort = 'abundance') + 
-  scale_fill_manual(values = fam_cols) +  ylab('Absolute read counts')
-
-
-phy_gen_rel <- phyloseq_qza %>% tax_glom(.,"Genus") %>% aggregate_taxa(level = "Genus")  %>% microbiome::transform(transform = 'compositional')
-rel_abund_plots_gen <- plot_composition(x = phy_gen_rel,otu.sort = 'abundance') + 
-  scale_fill_manual(values = fam_cols) + ylab('Relative abundance')
-
-
-
-otu_plots_gen <- ggarrange(abs_abund_plots_gen, rel_abund_plots_gen, ncol = 2, align ='h', common.legend = T, legend="right")
-
-pdf(file = "./out/16S-plots-stacked-Genus.pdf",   
-    width = 7, 
-    height = 12) 
+abund_plot_phyl$data$Sample <- factor(abund_plot_phyl$data$Sample, levels=order_list)
   
-plot(otu_plots_gen)
+  phy_phyl_rel <- phyloseq_qza %>% tax_glom(.,"Phylum") %>% aggregate_taxa(level = "Phylum")  %>% microbiome::transform(transform = 'compositional')
+  rel_plot_phyl <- plot_composition(x = phy_phyl_rel,otu.sort = 'abundance') + 
+    scale_fill_manual(values = fam_cols) +  ylab('Relative Abundance')
+  rel_plot_phyl$data$Sample <- factor(rel_plot_phyl$data$Sample, levels=order_list)
+
+
+#Family
+phy_fam_abs <- phyloseq_qza %>% tax_glom(.,"Family") %>% aggregate_taxa(level = "Family")  
+abund_plot_fam <- plot_composition(x = phy_fam_abs,otu.sort = 'abundance') + 
+  scale_fill_manual(values = fam_cols) +  ylab('Absolute read counts')
+abund_plot_fam$data$Sample <- factor(abund_plot_fam$data$Sample, levels=order_list)
+  
+
+  phy_fam_rel <- phyloseq_qza %>% tax_glom(.,"Family") %>% aggregate_taxa(level = "Family")  %>% microbiome::transform(transform = 'compositional')
+  rel_plot_fam <- plot_composition(x = phy_fam_rel,otu.sort = 'abundance') + 
+    scale_fill_manual(values = fam_cols) +  ylab('Relative abundance')
+  rel_plot_fam$data$Sample <- factor(rel_plot_fam$data$Sample, levels=order_list)
+
+
+#Genus
+phy_gen_abs <- phyloseq_qza %>% tax_glom(.,"Genus") %>% aggregate_taxa(level = "Genus")  
+abund_plot_gen <- plot_composition(x = phy_gen_abs,otu.sort = 'abundance') + 
+  scale_fill_manual(values = fam_cols) +  ylab('Absolute read counts')
+
+abund_plot_gen$data$Sample <- factor(abund_plot_gen$data$Sample, levels=order_list)
+    
+    
+    phy_gen_rel <- phyloseq_qza %>% tax_glom(.,"Genus") %>% aggregate_taxa(level = "Genus")  %>% microbiome::transform(transform = 'compositional')
+    rel_plot_gen <- plot_composition(x = phy_gen_rel,otu.sort = 'abundance') + 
+      scale_fill_manual(values = fam_cols) + ylab('Relative abundance')
+    rel_plot_gen$data$Sample <- factor(rel_plot_gen$data$Sample, levels=order_list)
+
+
 # 
 # stacked_fam_gen_plots <- ggarrange(otu_plots_fam, otu_plots_gen, nrow=2, aligh = 'v')
 
@@ -659,15 +680,27 @@ plot(otu_plots_gen)
 ```
 
 ```{r}
+library(svglite)
+otu_plots_gen <- ggarrange(abund_plot_gen, rel_plot_gen, ncol = 2, align ='h', common.legend = T, legend="right")
 
-
-otu_plots_fam <- ggarrange(abs_abund_plots_fam, rel_abund_plots_fam, ncol = 2, align ='h', common.legend = T, legend="right")
+pdf(file = "./out/16S-plots-stacked-Genus.pdf",   
+    width = 7, 
+    height = 6) 
+  
+plot(otu_plots_gen)
+otu_plots_phyl <- ggarrange(abund_plot_phyl, rel_plot_phyl, ncol = 2, align ='h', common.legend = T, legend="right")
 
 
 
 pdf(file = "./out/16S-plots-stacked-Family.pdf",   
     width = 7, 
-    height = 12) 
+    height = 6) 
 
-plot(otu_plots_fam)
+final_summ_plot <- ggarrange(otu_plots_phyl, otu_plots_gen, ncol = 1, nrow = 2, align = "hv")
+
+plot(final_summ_plot)
+
+ggsave('otu_plot_phyl.svg', otu_plots_phyl,  device = "svg", width = 7, height = 15)
+ggsave('otu_plot_gen.svg', otu_plots_gen, device = "svg", width = 7, height = 15) 
+  ggsave("final_otu_plot.svg", final_summ_plot, device = "svg", width = 14, height = 12)
 ```
