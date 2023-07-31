@@ -9,8 +9,8 @@ ko00643	Styrene degradation
 ko00622	Xylene degradation
 ko00624	Polycyclic aromatic hydrocarbon degradation
 ko00791	Atrazine Degradation
-ko00930	Caprolactam degradation
+ko00930	Caprolactam degradation	
 ko00642	Ethylbenzene degradation
 ko00626	Naphthalene degradation
 ko00623	Toluene degradation
-ko00071	Fatty acid degradation
+ko00071	Fatty acid metabolism

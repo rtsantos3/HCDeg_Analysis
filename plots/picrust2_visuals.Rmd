@@ -169,6 +169,8 @@ dev.off()
 
 #This works na, what I did was generate a list of dataframes first then concatenated them afterwards. I can reuse the degdfs to generate individual 
 
+
+
 degdf_list <- list()
 
 for(i in 1:nrow(pth_2_ko)){
@@ -182,13 +184,16 @@ for(i in 1:nrow(pth_2_ko)){
 #Concatenate all dfs in degdf list
 deg_df = do.call(rbind, degdf_list)
 #The pathway column needs to be categorical pala para mag-work lol
-deg_df$pathway <- as.factor(deg_df$pathway)
-deg_df$pathway_desc <- as.factor(deg_df$pathway_desc)
+
+#Sort the pathways also in alphabetical order
+sorted_pathways <- sort(unique(deg_df$pathway_desc))
+deg_df$pathway <- factor(deg_df$pathway)
+deg_df$pathway_desc <- factor(deg_df$pathway_desc, levels=sorted_pathways)
 #reset index
 rownames(deg_df) <- NULL
 
 #Let's remove yung atrazine, dioxin, and styrene pathways
-deg_df  <- subset(deg_df, !(pathway %in% c('ko00791', 'ko00643')))
+deg_df  <- subset(deg_df, !(pathway %in% c('ko00791','ko00621' ,'ko00643')))
 
 ```
 
@@ -282,38 +287,11 @@ heatmap.2(gen_mat(unstr_keg_filtered,sample_ids),
           
           col = heat_palette, margins=c(10,24))
 
+
 dev.off()
 ```
 
-```{r}
-#Generate Heatplot from unstratified KOs per pathway in deg_kos
-#I'll generate one first then convert that to a function
 
-
-#This works na, what I did was generate a list of dataframes first then concatenated them afterwards. I can reuse the degdfs to generate individual 
-
-degdf_list <- list()
-
-for(i in 1:nrow(pth_2_ko)){
-  fun_list <- na.omit(unlist(pth_2_ko[i,]))
-  fun_df <- subset.data.frame(ko_unstrat, function. %in% fun_list)
-  fun_df$pathway <- rownames(pth_2_ko[i,])
-  fun_df$pathway_desc <- deg_kos[fun_df$pathway,]
-  degdf_list[[i]] <-fun_df
-}
-
-#Concatenate all dfs in degdf list
-deg_df = do.call(rbind, degdf_list)
-#The pathway column needs to be categorical pala para mag-work lol
-deg_df$pathway <- as.factor(deg_df$pathway)
-deg_df$pathway_desc <- as.factor(deg_df$pathway_desc)
-#reset index
-rownames(deg_df) <- NULL
-
-#Let's remove yung atrazine, dioxin, and styrene pathways
-deg_df  <- subset(deg_df, !(pathway %in% c('ko00791', 'ko00643', 'ko00621')))
-
-```
 
 ```{r}
 
@@ -403,33 +381,6 @@ ko_counts %>% count(pathway_desc)
 ```
 
 
-```{r}
-
-#Lastly, this code block is to summarize each of the KOs on a per taxa basis. We'll be using the stratified code block here. The methodology is based on Boto et al (2019) where the absolute counts of each taxa (taxon_function_abun) were summarized. For simplicity's  sake we will be aggregating each per family (as determined by the classification method (Vsearch) used to type the ASVs using Qiime2)
-
-
-# 
-# Bôto, M. L., Magalhães, C., Perdigão, R., Alexandrino, D. A., Fernandes, J. P., Bernabeu, A. M., ... & Mucha, A. P. (2021). Harnessing the potential of native microbial communities for bioremediation of oil spills in the Iberian Peninsula NW coast. Frontiers in microbiology, 12, 879.
-cons_codes <- c('HC-DS'='B2',
-                'HC-XY'='B7',
-                'HC-HX'='B1',
-                'HC-HD'='A5')
-
-#Change taxon ids to family
-kegg_strat_relcounts <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Family'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc)
-
-kegg_strat_relcounts$description <- factor(kegg_strat_relcounts$description)
-kegg_strat_relcounts$taxon <- factor(kegg_strat_relcounts$taxon)
-
-#Finally, aggregate any families
-
-write.table(kegg_strat_relcounts, file =  './intermediate_files/selected_relative_abundance_KEGG_pathways (stratified).tsv', sep ='\t', col.names = T)
-
-
-
-
-
-```
 
 
 ```{r}
@@ -534,10 +485,12 @@ plot(plot8)
 
 ```{r}
 #Generate the plot for relative counts
-fam_cols  <- distinctColorPalette(20)
+fam_cols  <- distinctColorPalette(20) #The palette below is the palette I opted to use
+fam_cols <- c("#BC6FE2", "#7CAFE0", "#7E9991", "#D0E4B5", "#6FE3A5", "#D1E5E5", "#E54CD7", "#DCB192", "#E166B1", "#76DED7", "#DF646F" ,"#CDD576", "#DA9FDA" ,"#6B7DE2", "#913AE2" ,"#836590" ,"#D3E345", "#D7BDD3", "#75E25F", "#E59B46")
+
+
 
 kegg_strat_relcounts_phylum <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Phylum'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc)
-
 
 pdf(file = "./out/Per-phylum-relcounts-KEGG.pdf",   
     width = 14, 
@@ -547,9 +500,10 @@ plot6<- ggplot(kegg_strat_relcounts_phylum, aes(x=description, y=taxon_rel_funct
 geom_bar(position="stack", stat="identity")  +   
 scale_fill_manual(values=fam_cols, drop=T) +
 labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
+plot6$data$description <- factor(plot6$data$description, levels=sort(unique(plot6$data$description), decreasing=T))
 
 
-kegg_strat_relcounts_genus <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = ifelse(is.na(taxa_vsearch[taxon,'Genus'])==TRUE,taxa_vsearch[taxon, 'Family'], taxa_vsearch[taxon,'Genus']), taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc) #Summarise based on taxon_rel 
+kegg_strat_relcounts_genus <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = ifelse(is.na(taxa_vsearch[taxon,'Genus'])==TRUE,taxa_vsearch[taxon, 'Family'], taxa_vsearch[taxon,'Genus']), taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc)  
 
 
 pdf(file = "./out/Per-GenusFam-relcounts-KEGG.pdf",   
@@ -560,6 +514,8 @@ plot9 <- ggplot(kegg_strat_relcounts_genus, aes(x=description, y=taxon_rel_funct
 geom_bar(position="stack", stat="identity")  +   
 scale_fill_manual(values=fam_cols, drop=T) +
 labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
+
+plot9$data$description <- factor(plot9$data$description, levels=sort(unique(plot9$data$description), decreasing=T))
 
 
 
