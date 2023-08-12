@@ -1,5 +1,5 @@
-Sample-id	source	Samplesite	Subsamplesite	treatment
-HC-DS	consortia	B	2-2	Diesel
-HC-XY	consortia	B	7-1	Xylene
-HC-HX	consortia	B	1-1	Hexane
-HC-HD	consortia	A	5-1	Hexadecane
+Sample-id	source	Samplesite	Subsamplesite	treatment	Sample-name
+HC-DS	consortia	B	2-2	Diesel	B2
+HC-XY	consortia	B	7-1	Xylene	B7
+HC-HX	consortia	B	1-1	Hexane	B1
+HC-HD	consortia	A	5-1	Hexadecane	A5
