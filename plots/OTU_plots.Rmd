@@ -28,51 +28,39 @@ library(wesanderson)
 library(svglite)
 library(cowplot)
 
-
-
-#Generate the plot for relative counts
-fam_cols  <- distinctColorPalette(20) #The palette below is the palette I opted to use
-fam_cols <- c("#BC6FE2", "#7CAFE0", "#7E9991", "#D0E4B5", "#6FE3A5", "#D1E5E5", "#E54CD7", "#DCB192", "#E166B1", "#76DED7", "#DF646F" ,"#CDD576", "#DA9FDA" ,"#6B7DE2", "#913AE2" ,"#836590" ,"#D3E345", "#D7BDD3", "#75E25F", "#E59B46")
-
-
-
-kegg_strat_relcounts_phylum <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = taxa_vsearch[taxon, 'Phylum'], taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc)
-
-pdf(file = "./out/Per-phylum-relcounts-KEGG.pdf",   
-    width = 14, 
-    height = 7) 
-
-plot6<- ggplot(kegg_strat_relcounts_phylum, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
-geom_bar(position="stack", stat="identity")  +   
-scale_fill_manual(values=fam_cols, drop=T) +
-labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
-plot6$data$description <- factor(plot6$data$description, levels=sort(unique(plot6$data$description), decreasing=T))
-
-
-kegg_strat_relcounts_genus <- strat_kegg %>% transmute(description = as.factor(description), sample, taxon = ifelse(is.na(taxa_vsearch[taxon,'Genus'])==TRUE,taxa_vsearch[taxon, 'Family'], taxa_vsearch[taxon,'Genus']), taxon_rel_function_abun) %>% group_by(sample, description,taxon) %>% summarise(across(taxon_rel_function_abun, sum)) %>% filter(description %in% deg_df$pathway_desc)  
-
-
-pdf(file = "./out/Per-GenusFam-relcounts-KEGG.pdf",   
-    width = 14, 
-    height = 7) 
-
-plot9 <- ggplot(kegg_strat_relcounts_genus, aes(x=description, y=taxon_rel_function_abun, fill = taxon)) +
-geom_bar(position="stack", stat="identity")  +   
-scale_fill_manual(values=fam_cols, drop=T) +
-labs(y= "Function relative abundance (Per taxon)", x="HC Degradation Pathways (Level 3 KEGG)")+ coord_flip() + facet_wrap(~sample, nrow = 1)
-
-plot9$data$description <- factor(plot9$data$description, levels=sort(unique(plot9$data$description), decreasing=T))
-
-
-
-pdf(file = "./out/Stacked-GenusFam-relcounts-KEGG.pdf",   
-    width = 11, 
-    height = 8) 
-
-gen_fam_plot <- ggarrange(plot6, plot9, nrow = 2, align ='v')
-
-ggsave('./out/pathway-counts/Stacked-GenusFam-relcounts-KEGG.svg', gen_fam_plot,device='svg', width=15, height=10)
 ```
+
+
+```{r}
+
+#Retrieve Sample ids so I can call it as a variable 
+sample_ids <- c('HC.DS','HC.XY','HC.HX','HC.HD')
+
+cons_codes <- c('HC-DS'='B2',
+                'HC-XY'='B7',
+                'HC-HX'='B1',
+                'HC-HD'='A5')
+
+# Function to change names
+change_distance_matrix_names <- function(old_names, new_names, distance_matrix) {
+  new_names <- new_names[old_names]
+  rownames(distance_matrix) <- new_names
+  colnames(distance_matrix) <- new_names
+  return(distance_matrix)
+}
+
+#First load the distance matrices from the bray-curtis plot
+bray_curtis_matrix <- read_qza(file='../diversity/bray_curtis_distance_matrix.qza')$data
+jacc_matrix <- read_qza(file='../diversity/jaccard_distance_matrix.qza')$data
+
+jacc_matrix
+
+
+
+```
+
+
+
 
 ```{r}
 
@@ -111,7 +99,12 @@ pth_2_ko[,1] <- NULL
 #Retrieve Sample ids so I can call it as a variable 
 sample_ids <- c('HC.DS','HC.XY','HC.HX','HC.HD')
 
-#Rename the sample names to 
+cons_codes <- c('HC-DS'='B2',
+                'HC-XY'='B7',
+                'HC-HX'='B1',
+                'HC-HD'='A5')
+
+strat_kegg <- strat_kegg %>% mutate(sample=recode(sample, !!!cons_codes))
 
 
 ```
